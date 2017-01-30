@@ -9,7 +9,6 @@ namespace PS3
     public class Galaxy
     {
         private long galacticDiam;
-        private int starCount;
         private string starNumber = "NO";
        
 
@@ -35,7 +34,6 @@ namespace PS3
                     if (count == 0)
                     {
                         galacticDiam = Convert.ToInt64(currentLine[0]);
-                        starCount = Convert.ToInt32(currentLine[1]);
                         count++;
                         continue;
                     }
@@ -61,15 +59,19 @@ namespace PS3
             }
             else
             {
-                for (int i = 0; i < s.Count - 1; i = i + 2)
+                for (int i = 0; i < s.Count; i++)
                 {
-                    int result = CalculateDistances(s.ElementAt(i), s.ElementAt(i + 1));
+                    int result = CalculateDistances(s.ElementAt(0), s.ElementAt(i));
                     if (result == 1)
                     {
                         keptStars.Add(s.ElementAt(i));
                     }
                 }
-                starNumber = FindStarMajority(keptStars).ToString();
+
+                if (keptStars.Count > (s.Count / 2))
+                {
+                    starNumber = keptStars.Count.ToString();
+                }
             }
             return starNumber;
         }
