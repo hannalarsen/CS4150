@@ -8,7 +8,7 @@ namespace PS3
 {
     public class Galaxy
     {
-        private long galacticDiam;
+        private static long galacticDiam;
         private string starNumber = "NO";
        
 
@@ -16,7 +16,7 @@ namespace PS3
         {
             Galaxy g = new Galaxy();
             List<Star> st = g.GetStars();
-            Console.WriteLine(g.FindStarMajority(st));
+            Console.WriteLine(g.FindStarMajority(st, galacticDiam));
         }
 
         public List<Star> GetStars()
@@ -46,7 +46,7 @@ namespace PS3
             return stars;
         }
 
-        public string FindStarMajority(List<Star> s)
+        public string FindStarMajority(List<Star> s, long gD)
         {
             List<Star> keptStars = new List<Star>();
             if (s.Count == 0)
@@ -61,7 +61,7 @@ namespace PS3
             {
                 for (int i = 0; i < s.Count; i++)
                 {
-                    int result = CalculateDistances(s.ElementAt(0), s.ElementAt(i));
+                    int result = CalculateDistances(s.ElementAt(0), s.ElementAt(i), gD);
                     if (result == 1)
                     {
                         keptStars.Add(s.ElementAt(i));
@@ -76,7 +76,7 @@ namespace PS3
             return starNumber;
         }
 
-        private int CalculateDistances(Star s1, Star s2)
+        private int CalculateDistances(Star s1, Star s2, long gD)
         {
             long x1 = s1.GetXCoord();
             long y1 = s1.GetYCoord();
@@ -84,15 +84,16 @@ namespace PS3
             long y2 = s2.GetYCoord();
             long xDist = (x1 - x2) * (x1 - x2);
             long yDist = (y1 - y2) * (y1 - y2);
+            
 
             // If star are in same Galaxy
-            if ((xDist + yDist) <= (galacticDiam*galacticDiam))
+            if ((xDist + yDist) <= (gD*gD))
             {
                 return 1;
             }
 
             // If stars are in different galaxies
-            else if ((xDist + yDist) > (galacticDiam*galacticDiam))
+            else if ((xDist + yDist) > (gD*gD))
             {
                 return 0;
             }
