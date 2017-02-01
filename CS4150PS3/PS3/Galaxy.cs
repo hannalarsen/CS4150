@@ -49,6 +49,7 @@ namespace PS3
         public string FindStarMajority(List<Star> s, long gD)
         {
             List<Star> keptStars = new List<Star>();
+            List<Star> discardedStars = new List<Star>();
             if (s.Count == 0)
             {
                return "NO";
@@ -66,11 +67,25 @@ namespace PS3
                     {
                         keptStars.Add(s.ElementAt(i));
                     }
+                    else if (result == 0)
+                    {
+                        discardedStars.Add(s.ElementAt(0));
+                        discardedStars.Add(s.ElementAt(1));
+                    }
                 }
 
+                string x = FindStarMajority(discardedStars, gD);
+                if(x == "NO")
+                {
+
+                }
                 if (keptStars.Count > (s.Count / 2))
                 {
                     starNumber = keptStars.Count.ToString();
+                }
+                else if (discardedStars.Count > (s.Count /2))
+                {
+                    starNumber = discardedStars.Count.ToString();
                 }
             }
             return starNumber;
