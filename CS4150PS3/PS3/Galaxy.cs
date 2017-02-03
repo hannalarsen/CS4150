@@ -49,7 +49,7 @@ namespace PS3
         public string FindStarMajority(List<Star> s, long gD)
         {
             List<Star> keptStars = new List<Star>();
-            List<Star> discardedStars = new List<Star>();
+            Star y;
             if (s.Count == 0)
             {
                return "NO";
@@ -62,30 +62,36 @@ namespace PS3
             {
                 for (int i = 0; i < s.Count; i++)
                 {
-                    int result = CalculateDistances(s.ElementAt(0), s.ElementAt(i), gD);
-                    if (result == 1)
+                    int result1 = CalculateDistances(s.ElementAt(0), s.ElementAt(i), gD);
+                    if (result1 == 1)
                     {
                         keptStars.Add(s.ElementAt(i));
                     }
-                    else if (result == 0)
-                    {
-                        discardedStars.Add(s.ElementAt(0));
-                        discardedStars.Add(s.ElementAt(1));
-                    }
                 }
-
-                string x = FindStarMajority(discardedStars, gD);
-                if(x == "NO")
-                {
-
-                }
+                //string x = FindStarMajority(keptStars, gD);
                 if (keptStars.Count > (s.Count / 2))
                 {
                     starNumber = keptStars.Count.ToString();
                 }
-                else if (discardedStars.Count > (s.Count /2))
+                if (starNumber == "NO")
                 {
-                    starNumber = discardedStars.Count.ToString();
+                    keptStars = new List<Star>();
+                    if(s.Count % 2 > 0)
+                    {
+                        y = s.ElementAt(s.Count - 1);
+                        foreach (Star n in s)
+                        {
+                            int result2 = CalculateDistances(y, n, gD);
+                            if(result2 == 1)
+                            {
+                                keptStars.Add(n);
+                            }
+                        }
+                    }
+                }
+                if (keptStars.Count > (s.Count / 2))
+                {
+                    starNumber = keptStars.Count.ToString();
                 }
             }
             return starNumber;
