@@ -46,50 +46,154 @@ namespace PS3
 
         public string FindStarMajority(List<Star> s, long gD)
         {
-            List<Star> keptStars = new List<Star>();
-            Star y;
-            if (s.Count == 0)
+            //List<Star> keptStars = new List<Star>();
+            //Star y;
+            //if (s.Count == 0)
+            //{
+            //    return "NO";
+            //}
+            //if (s.Count == 1)
+            //{
+            //    return "1";
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < s.Count; i++)
+            //    {
+            //        int result1 = CalculateDistances(s.ElementAt(0), s.ElementAt(i), gD);
+            //        if (result1 == 1)
+            //        {
+            //            keptStars.Add(s.ElementAt(i));
+            //        }
+            //    }
+            //    //string x = FindStarMajority(keptStars, gD);
+            //    if (keptStars.Count > (s.Count / 2))
+            //    {
+            //        starNumber = keptStars.Count.ToString();
+            //    }
+            //    if (starNumber == "NO")
+            //    {
+            //        keptStars = new List<Star>();
+            //        if (s.Count % 2 > 0)
+            //        {
+            //            y = s.ElementAt(s.Count - 1);
+            //            foreach (Star n in s)
+            //            {
+            //                int result2 = CalculateDistances(y, n, gD);
+            //                if (result2 == 1)
+            //                {
+            //                    keptStars.Add(n);
+            //                }
+            //            }
+            //        }               
+            //    }
+            //    if (keptStars.Count > (s.Count / 2))
+            //    {
+            //        starNumber = keptStars.Count.ToString();
+            //    }
+            //}
+            //return starNumber;
+
+            if(s.Count == 0)
             {
-                return "NO";
+                return starNumber;
             }
-            if (s.Count == 1)
+            else if (s.Count == 1)
             {
-                return "1";
+                string MajorityStar = s.ElementAt(0).GetXCoord().ToString() + " " + s.ElementAt(0).GetYCoord().ToString();
+                return MajorityStar;
             }
             else
             {
-                for (int i = 0; i < s.Count; i++)
+                List<Star> s1 = new List<Star>();
+                List<Star> s2 = new List<Star>();
+                for (int i = 0; i < s.Count/2; i++)
                 {
-                    int result1 = CalculateDistances(s.ElementAt(0), s.ElementAt(i), gD);
-                    if (result1 == 1)
-                    {
-                        keptStars.Add(s.ElementAt(i));
-                    }
+                    s1.Add(s.ElementAt(i));
                 }
-                //string x = FindStarMajority(keptStars, gD);
-                if (keptStars.Count > (s.Count / 2))
+                for(int j = s.Count/2; j < s.Count; j++)
                 {
-                    starNumber = keptStars.Count.ToString();
+                    s2.Add(s.ElementAt(j));
                 }
-                if (starNumber == "NO")
+                string x = FindStarMajority(s1, gD);
+                string y = FindStarMajority(s2, gD);
+                char[] space = { ' ' };
+                if (x == "NO" && y == "NO")
                 {
-                    keptStars = new List<Star>();
-                    if (s.Count % 2 > 0)
+                    return "NO";
+                }
+
+                else if (x == "NO")
+                {
+                    int count = 0;
+                    string[] starCoords = y.Split(space);
+                    Star yStar = new Star(starCoords[0], starCoords[1]);
+                    foreach (Star n in s)
                     {
-                        y = s.ElementAt(s.Count - 1);
-                        foreach (Star n in s)
+                        int result2 = CalculateDistances(yStar, n, gD);
+                        if (result2 == 1)
                         {
-                            int result2 = CalculateDistances(y, n, gD);
-                            if (result2 == 1)
-                            {
-                                keptStars.Add(n);
-                            }
+                            count++;
                         }
-                    }               
+                    }
+                    if (count > s.Count / 2)
+                    {
+                        starNumber = count.ToString();
+                        return y;
+                    }
+                    return starNumber;
                 }
-                if (keptStars.Count > (s.Count / 2))
+                else if (y == "NO") 
                 {
-                    starNumber = keptStars.Count.ToString();
+                    int count = 0;
+                    string[] starCoords = x.Split(space);
+                    Star xStar = new Star(starCoords[0], starCoords[1]);
+                    foreach (Star n in s)
+                    {
+                        int result2 = CalculateDistances(xStar, n, gD);
+                        if (result2 == 1)
+                        {
+                            count++;
+                        }
+                    }
+                    if (count > s.Count / 2)
+                    {
+                        starNumber = count.ToString();
+                        return x;
+                    }
+                    return starNumber;
+                }
+                else
+                {
+                    int countX = 0;
+                    int countY = 0;
+                    string[] starCoordsX = x.Split(space);
+                    string[] starCoordsY = x.Split(space);
+                    Star xStar = new Star(starCoordsX[0], starCoordsX[1]);
+                    Star yStar = new Star(starCoordsY[0], starCoordsY[1]);
+                    foreach (Star n in s)
+                    {
+                        int resultX = CalculateDistances(xStar, n, gD);
+                        int resultY = CalculateDistances(yStar, n, gD);
+                        if (resultX == 1)
+                        {
+                            countX++;
+                        }
+                        if (resultY == 1)
+                        {
+                            countY++;
+                        }
+                    }
+                    if (countX > s.Count/2)
+                    {
+                        starNumber = countX.ToString();
+                        return x;
+                    }
+                    else if (countY > s.Count/2)
+                    {
+                        starNumber = countY.ToString();
+                        return y;
+                    }
                 }
             }
             return starNumber;
