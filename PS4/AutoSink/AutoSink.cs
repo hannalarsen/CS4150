@@ -93,22 +93,16 @@ namespace AutoSink
         {
             map = new Graph();
             // Adds vertices
-            foreach(string k in cities.Keys)
+            for (int i = 0; i < startCity.Count; i++)
             {
-                Vertex v = new Vertex(k);
-                map.AddVertex(v);
-            }
-            foreach (Vertex v in map.GetVertices())
-            {
-                int i = 0;
-                while (i < h)
+                Vertex v1 = new Vertex(startCity.ElementAt(i));
+                Vertex v2 = new Vertex(destination.ElementAt(i));
+                if(!map.GetVertices().Contains(v1))
                 {
-                    if (v.GetCityName() == startCity.ElementAt(i))
-                    {
-
-                    }
-                    i++;
+                    map.AddVertex(v1);
                 }
+            }
+            
                 
             }
         }
