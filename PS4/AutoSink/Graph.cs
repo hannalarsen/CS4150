@@ -33,10 +33,10 @@ namespace AutoSink
         private string cityName;
         private int toll;
         private LinkedList<Vertex> neighbors;
-        public Vertex(string c, int t)
+        public Vertex(string c)
         {
             cityName = c;
-            toll = t;
+            //toll = t;
             neighbors = new LinkedList<Vertex>();
         }
 

@@ -12,17 +12,25 @@ namespace AutoSink
         private int n;
         private int h;
         private int t;
-        private Dictionary<string, string> trips;
+        private List<string> tripStart;
+        private List<string> tripEnd;
+        private List<string> startCity;
+        private List<string> destination;
+        private Graph  map;
         static void Main(string[] args)
         {
             AutoSink a = new AutoSink();
-            Console.WriteLine(a.CreateMap());
+            a.GetInfo();
+            a.CreateGraph();
         }
 
-        public Dictionary<string, string> CreateMap()
+        public void GetInfo()
         {
             cities = new Dictionary<string, int>();
-            trips = new Dictionary<string, string>();
+            tripStart = new List<string>();
+            tripEnd = new List<string>();
+            startCity = new List<string>();
+            destination = new List<string>();
             Graph g = new Graph();
             try
             {
@@ -53,37 +61,25 @@ namespace AutoSink
                         h = Convert.ToInt32(currentLine[0]);
                         ncount++;
                     }
-                    // Adds highways (makes graph)
-                    else if (ncount > n+1 && hcount <= h)
+                    // Adds highways
+                    else if (ncount > n+1 && hcount < h)
                     {
-                        int value;
-                        
-                        if(cities.ContainsKey(currentLine[0]))
-                        {
-                            cities.TryGetValue(currentLine[0], out value);
-                            Vertex v1 = new Vertex(currentLine[0], value);
-                            cities.TryGetValue(currentLine[1], out value);
-                            Vertex v2 = new Vertex(currentLine[1], value);
-                            if (!g.GetVertices().Contains(v1))
-                            {
-                                g.AddVertex(v1);
-                            }
-                            if(!v1.GetNeighbors().Contains(v2))
-                            {
-                                v1.AddNeighbor(v2);
-                            }
-                            hcount++;
-                        }
+                        string from = currentLine[0];
+                        string to = currentLine[1];
+                        startCity.Add(from);
+                        destination.Add(to);
+                        hcount++;
                     }
-
-                    else if (hcount == h+1)
+                    // Number of trips
+                    else if (hcount == h)
                     {
                         t = Convert.ToInt32(currentLine[0]);
-                        ncount++;
+                        hcount++;
                     }
-                    else if (hcount > h+1 && tcount <= t)
+                    else if (hcount > h && tcount < t)
                     {
-                        trips.Add(currentLine[0], currentLine[1]);
+                        tripStart.Add(currentLine[0]);
+                        tripEnd.Add(currentLine[1]);
                         tcount++;
                     }
                 }
@@ -91,7 +87,30 @@ namespace AutoSink
             catch (Exception e)
             {
             }
-            return trips;
+        }
+
+        public void CreateGraph()
+        {
+            map = new Graph();
+            // Adds vertices
+            foreach(string k in cities.Keys)
+            {
+                Vertex v = new Vertex(k);
+                map.AddVertex(v);
+            }
+            foreach (Vertex v in map.GetVertices())
+            {
+                int i = 0;
+                while (i < h)
+                {
+                    if (v.GetCityName() == startCity.ElementAt(i))
+                    {
+
+                    }
+                    i++;
+                }
+                
+            }
         }
     }
 }
