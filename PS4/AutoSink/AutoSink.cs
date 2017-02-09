@@ -22,6 +22,8 @@ namespace AutoSink
             AutoSink a = new AutoSink();
             a.GetInfo();
             a.CreateGraph();
+            Console.WriteLine(a.FindMinToll(a.tripStart, a.tripEnd));
+            
         }
 
         public void GetInfo()
@@ -110,6 +112,12 @@ namespace AutoSink
 
         Dictionary<Vertex, bool> visited;
         List<Vertex> sorted;
+
+        /// <summary>
+        /// Returns a list of vertices in reverse topologically sorted order
+        /// </summary>
+        /// <param name="g"></param>
+        /// <returns></returns>
         public List<Vertex> TopoSort(Graph g)
         {
             visited = new Dictionary<Vertex, bool>();
@@ -119,7 +127,7 @@ namespace AutoSink
                 visited.Add(v, false);
             }
 
-            foreach (Vertex v in visited.Keys)
+            foreach (Vertex v in g.GetVertices())
             {
                 bool value;
                 visited.TryGetValue(v, out value);
@@ -134,9 +142,7 @@ namespace AutoSink
 
         private void Explore(Graph g, Vertex v)
         {
-            bool value;
-            visited.TryGetValue(v, out value);
-            value = true;
+            visited[v] = true;
             foreach (Vertex v1 in g.GetNeighbors(v))
             {
                 bool value2;
@@ -152,7 +158,13 @@ namespace AutoSink
         public List<string> FindMinToll(List<string> start, List<string> end)
         {
             List<string> tolls = new List<string>();
-            //List<Vertex> sortedCities = map.TopoSort();
+            List<Vertex> topoOrder = new List<Vertex>();
+            TopoSort(map);
+            // Puts in topo order
+            for (int i = sorted.Count - 1; i >= 0; i--)
+            {
+                topoOrder.Add(sorted.ElementAt(i));
+            }
             for (int i = 0; i < start.Count; i++)
             {
                 string minToll = "NO";
@@ -166,46 +178,40 @@ namespace AutoSink
                 }
 
                 // If cities are inaccessible to each other
-//                else if (sortedCities.IndexOf(map.FindVertex(startCity)) > sortedCities.IndexOf(map.FindVertex(endCity)))
+                else if (sorted.IndexOf(map.FindVertex(startCity)) < sorted.IndexOf(map.FindVertex(endCity)))
                 {
                     tolls.Add(minToll);
                 }
+                
+                // If destination is a neighbor of start
+                else if (map.GetNeighbors(map.FindVertex(startCity)).Contains(map.FindVertex(endCity)))
+                {
+                    int toll1;
+                    cities.TryGetValue(startCity, out toll1);
+                    int toll2;
+                    cities.TryGetValue(endCity, out toll2);
+                    int sum = toll1 + toll2;
+                    minToll = sum.ToString();
+                    tolls.Add(minToll);
+                }
 
+                else
+                {
+                    int startIndex = topoOrder.IndexOf(map.FindVertex(startCity));
+                    int endIndex = topoOrder.IndexOf(map.FindVertex(endCity));
+                    int sum = 0;
+                    for (int j = startIndex; j <= endIndex; j++)
+                    {
+                        int value;
+                        cities.TryGetValue(topoOrder.ElementAt(j).GetCityName(), out value);
+                        sum += value;
+                    }
+                    tolls.Add(sum.ToString());
+                }
 
             }
             return tolls;
         }
 
-        //public List<Vertex> TopoSort()
-        //{
-        //    List<Vertex> sorted = new List<Vertex>();
-        //    Stack<Vertex> stack = new Stack<Vertex>();
-        //    bool[] visited = new bool[map.GetVertices().Count];
-
-        //    for (int i = 0; i < visited.Length; i++)
-        //    {
-        //        visited[i] = false;
-        //    }
-
-        //    for (int i = 0; i < map.GetVertices().Count; i++)
-        //    {
-        //        if (visited[i] == false)
-        //        {
-        //            TopoHelper(i, visited, stack);
-        //        }
-        //    }
-
-        //    while (stack.Count > 0)
-        //    {
-        //        sorted.Add(stack.Pop());
-        //    }
-        //    return sorted;
-        //}
-
-        //private void TopoHelper(int i, bool[] b, Stack<Vertex> s)
-        //{
-        //    b[i] = true;
-
-        //}
     }
 }
