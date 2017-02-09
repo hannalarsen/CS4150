@@ -16,14 +16,14 @@ namespace AutoSink
         private List<string> tripEnd;
         private List<string> startCity;
         private List<string> destination;
-        private Graph  map;
+        private Graph map;
         static void Main(string[] args)
         {
             AutoSink a = new AutoSink();
             a.GetInfo();
             a.CreateGraph();
-            Console.WriteLine(a.FindMinToll(a.tripStart, a.tripEnd));
-            
+            foreach (string s in a.FindMinToll(a.tripStart, a.tripEnd)) ;
+
         }
 
         public void GetInfo()
@@ -46,7 +46,7 @@ namespace AutoSink
                 {
                     currentLine = line.Split(spaces);
                     // Number of cities
-                    if(ncount == 0)
+                    if (ncount == 0)
                     {
                         n = Convert.ToInt32(currentLine[0]);
                         ncount++;
@@ -58,13 +58,13 @@ namespace AutoSink
                         ncount++;
                     }
                     // Number of highways
-                    else if (ncount == n+1)
+                    else if (ncount == n + 1)
                     {
                         h = Convert.ToInt32(currentLine[0]);
                         ncount++;
                     }
                     // Adds highways
-                    else if (ncount > n+1 && hcount < h)
+                    else if (ncount > n + 1 && hcount < h)
                     {
                         string from = currentLine[0];
                         string to = currentLine[1];
@@ -94,14 +94,14 @@ namespace AutoSink
         public void CreateGraph()
         {
             map = new Graph();
-            foreach(string n in cities.Keys)
+            foreach (string n in cities.Keys)
             {
                 int value;
                 cities.TryGetValue(n, out value);
                 Vertex v = new Vertex(n, value);
                 map.AddVertex(v);
             }
-            for (int i = 0; i < startCity.Count; i ++)
+            for (int i = 0; i < startCity.Count; i++)
             {
                 string start = startCity.ElementAt(i);
                 string dest = destination.ElementAt(i);
@@ -122,7 +122,7 @@ namespace AutoSink
         {
             visited = new Dictionary<Vertex, bool>();
             sorted = new List<Vertex>();
-            foreach(Vertex v in g.GetVertices())
+            foreach (Vertex v in g.GetVertices())
             {
                 visited.Add(v, false);
             }
@@ -134,7 +134,7 @@ namespace AutoSink
                 if (value == false)
                 {
                     Explore(g, v);
-                    
+
                 }
             }
             return sorted;
@@ -147,13 +147,13 @@ namespace AutoSink
             {
                 bool value2;
                 visited.TryGetValue(v1, out value2);
-                if (value2== false)
+                if (value2 == false)
                 {
                     Explore(g, v1);
                 }
             }
             sorted.Add(v);
-            
+
         }
         public List<string> FindMinToll(List<string> start, List<string> end)
         {
@@ -182,36 +182,155 @@ namespace AutoSink
                 {
                     tolls.Add(minToll);
                 }
-                
+
                 // If destination is a neighbor of start
                 else if (map.GetNeighbors(map.FindVertex(startCity)).Contains(map.FindVertex(endCity)))
                 {
-                    int toll1;
-                    cities.TryGetValue(startCity, out toll1);
                     int toll2;
                     cities.TryGetValue(endCity, out toll2);
-                    int sum = toll1 + toll2;
+                    int sum = toll2;
                     minToll = sum.ToString();
                     tolls.Add(minToll);
                 }
 
                 else
                 {
-                    int startIndex = topoOrder.IndexOf(map.FindVertex(startCity));
-                    int endIndex = topoOrder.IndexOf(map.FindVertex(endCity));
-                    int sum = 0;
-                    for (int j = startIndex; j <= endIndex; j++)
+                    // Gets total costs
+                    for (int j = 0; j < sorted.Count; j++)
                     {
-                        int value;
-                        cities.TryGetValue(topoOrder.ElementAt(j).GetCityName(), out value);
-                        sum += value;
+                        int toll = sorted.ElementAt(j).GetToll();
+                        if(j == 0)
+                        {
+                            sorted.ElementAt(j).TotalCost(toll);
+                        }
+                        else
+                        {
+                            int prevToll = sorted.ElementAt(j -1).GetToll();
+                            sorted.ElementAt(j).TotalCost(prevToll);
+                        }
                     }
-                    tolls.Add(sum.ToString());
+
+                    
+                    int neighborToll = 0;
+                    int totalToll = neighborToll;
+                    foreach (Vertex v in map.GetNeighbors(map.FindVertex(startCity)))
+                    {
+                        neighborToll = v.GetTotalCost();
+                        if (neighborToll < totalToll)
+                        {
+                            totalToll = neighborToll;
+                        }
+                    }
+                    tolls.Add(totalToll.ToString());
                 }
 
             }
             return tolls;
         }
 
+
+
+
+
+
+        public class Graph
+        {
+            List<Vertex> Vertices;
+            List<Edge> Edges;
+            Dictionary<Vertex, List<Vertex>> g;
+            public Graph()
+            {
+                Vertices = new List<Vertex>();
+                Edges = new List<Edge>();
+                g = new Dictionary<Vertex, List<Vertex>>();
+            }
+
+            public List<Vertex> GetVertices()
+            {
+                return g.Keys.ToList<Vertex>();
+            }
+            public Vertex FindVertex(string name)
+            {
+
+                foreach (Vertex v in g.Keys)
+                {
+                    if (v.GetCityName() == name)
+                    {
+                        return v;
+                    }
+                }
+                return null;
+            }
+
+            public void AddNeighbor(Vertex v1, Vertex v2)
+            {
+                List<Vertex> value;
+                g.TryGetValue(v1, out value);
+                value.Add(v2);
+
+            }
+
+            public List<Vertex> GetNeighbors(Vertex v1)
+            {
+                List<Vertex> value;
+                g.TryGetValue(v1, out value);
+                return value;
+            }
+
+            public List<Edge> GetEdges()
+            {
+                return Edges;
+            }
+
+            public void AddVertex(Vertex v)
+            {
+                g.Add(v, new List<Vertex>());
+            }
+
+        }
+
+        public class Edge
+        {
+            public Edge(Vertex v1, Vertex v2)
+            {
+                // v1.AddNeighbor(v2);
+            }
+
+        }
+        public class Vertex
+        {
+            private string cityName;
+            private int toll;
+            private List<Vertex> neighbors;
+            private int totalCost;
+            public Vertex(string c, int t)
+            {
+                cityName = c;
+                toll = t;
+
+                //neighbors = new List<Vertex>();
+            }
+
+            public string GetCityName()
+            {
+                return cityName;
+            }
+
+            public int GetToll()
+            {
+                return toll;
+            }
+
+            public void TotalCost(int prevCost)
+            {
+                totalCost = toll + prevCost;
+            }
+
+            public int GetTotalCost()
+            {
+                return totalCost;
+            }
+        }
     }
+
 }
