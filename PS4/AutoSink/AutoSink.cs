@@ -103,15 +103,56 @@ namespace AutoSink
             {
                 string start = startCity.ElementAt(i);
                 string dest = destination.ElementAt(i);
-                map.FindVertex(start).AddNeighbor(map.FindVertex(dest));
+                map.AddNeighbor(map.FindVertex(start), (map.FindVertex(dest)));
             }
-            map.TopoSort();
+            TopoSort(map);
         }
 
+        Dictionary<Vertex, bool> visited;
+        List<Vertex> sorted;
+        public List<Vertex> TopoSort(Graph g)
+        {
+            visited = new Dictionary<Vertex, bool>();
+            sorted = new List<Vertex>();
+            foreach(Vertex v in g.GetVertices())
+            {
+                visited.Add(v, false);
+            }
+
+            foreach (Vertex v in visited.Keys)
+            {
+                bool value;
+                visited.TryGetValue(v, out value);
+                if (value == false)
+                {
+                    Explore(g, v);
+                    
+                }
+            }
+            return sorted;
+        }
+
+        private void Explore(Graph g, Vertex v)
+        {
+            bool value;
+            visited.TryGetValue(v, out value);
+            value = true;
+            foreach (Vertex v1 in g.GetNeighbors(v))
+            {
+                bool value2;
+                visited.TryGetValue(v1, out value2);
+                if (value2== false)
+                {
+                    Explore(g, v1);
+                }
+            }
+            sorted.Add(v);
+            
+        }
         public List<string> FindMinToll(List<string> start, List<string> end)
         {
             List<string> tolls = new List<string>();
-            List<Vertex> sortedCities = map.TopoSort();
+            //List<Vertex> sortedCities = map.TopoSort();
             for (int i = 0; i < start.Count; i++)
             {
                 string minToll = "NO";
@@ -125,7 +166,7 @@ namespace AutoSink
                 }
 
                 // If cities are inaccessible to each other
-                else if (sortedCities.IndexOf(map.FindVertex(startCity)) > sortedCities.IndexOf(map.FindVertex(endCity)))
+//                else if (sortedCities.IndexOf(map.FindVertex(startCity)) > sortedCities.IndexOf(map.FindVertex(endCity)))
                 {
                     tolls.Add(minToll);
                 }
