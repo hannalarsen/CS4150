@@ -92,19 +92,58 @@ namespace AutoSink
         public void CreateGraph()
         {
             map = new Graph();
-            // Adds vertices
-            for (int i = 0; i < startCity.Count; i++)
+            foreach(string n in cities.Keys)
             {
-                Vertex v1 = new Vertex(startCity.ElementAt(i));
-                Vertex v2 = new Vertex(destination.ElementAt(i));
-                if(!map.GetVertices().Contains(v1))
-                {
-                    map.AddVertex(v1);
-                }
+                int value;
+                cities.TryGetValue(n, out value);
+                Vertex v = new Vertex(n, value);
+                map.AddVertex(v);
             }
-            
-                
+            for (int i = 0; i < startCity.Count; i ++)
+            {
+                string start = startCity.ElementAt(i);
+                string dest = destination.ElementAt(i);
+                map.FindVertex(start).AddNeighbor(map.FindVertex(dest));
             }
         }
+
+        public string FindMinToll(string from, string to)
+        {
+            string minToll = "NO";
+
+            return minToll;
+        }
+
+        //public List<Vertex> TopoSort()
+        //{
+        //    List<Vertex> sorted = new List<Vertex>();
+        //    Stack<Vertex> stack = new Stack<Vertex>();
+        //    bool[] visited = new bool[map.GetVertices().Count];
+
+        //    for (int i = 0; i < visited.Length; i++)
+        //    {
+        //        visited[i] = false;
+        //    }
+
+        //    for (int i = 0; i < map.GetVertices().Count; i++)
+        //    {
+        //        if (visited[i] == false)
+        //        {
+        //            TopoHelper(i, visited, stack);
+        //        }
+        //    }
+
+        //    while (stack.Count > 0)
+        //    {
+        //        sorted.Add(stack.Pop());
+        //    }
+        //    return sorted;
+        //}
+
+        //private void TopoHelper(int i, bool[] b, Stack<Vertex> s)
+        //{
+        //    b[i] = true;
+
+        //}
     }
 }
