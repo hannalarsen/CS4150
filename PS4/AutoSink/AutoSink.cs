@@ -105,13 +105,34 @@ namespace AutoSink
                 string dest = destination.ElementAt(i);
                 map.FindVertex(start).AddNeighbor(map.FindVertex(dest));
             }
+            map.TopoSort();
         }
 
-        public string FindMinToll(string from, string to)
+        public List<string> FindMinToll(List<string> start, List<string> end)
         {
-            string minToll = "NO";
+            List<string> tolls = new List<string>();
+            List<Vertex> sortedCities = map.TopoSort();
+            for (int i = 0; i < start.Count; i++)
+            {
+                string minToll = "NO";
+                string startCity = start.ElementAt(i);
+                string endCity = end.ElementAt(i);
+                // If start and end destinations are the same
+                if (startCity == endCity)
+                {
+                    minToll = "0";
+                    tolls.Add(minToll);
+                }
 
-            return minToll;
+                // If cities are inaccessible to each other
+                else if (sortedCities.IndexOf(map.FindVertex(startCity)) > sortedCities.IndexOf(map.FindVertex(endCity)))
+                {
+                    tolls.Add(minToll);
+                }
+
+
+            }
+            return tolls;
         }
 
         //public List<Vertex> TopoSort()

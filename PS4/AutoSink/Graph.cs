@@ -60,7 +60,7 @@ namespace AutoSink
             {
                 if (visited[i] == false)
                 {
-                    TopoHelper(i, visited, stack);
+                    TopoHelper(i, visited, Vertices.ElementAt(i), stack);
                 }
             }
 
@@ -71,20 +71,33 @@ namespace AutoSink
             return sorted;
         }
 
-        private void TopoHelper(int i, bool[] b, Stack<Vertex> s)
+        private void TopoHelper(int i, bool[] b, Vertex v, Stack<Vertex> s)
         {
             b[i] = true;
-            int j = i;
-            while (j < Vertices.Count)
+            //int j = i;
+            //while (j < Vertices.Count)
+            //{
+            //    j++;
+            //    if (j <= Vertices.Count - 1)
+            //    {
+
+            //        if (!b[j])
+            //        {
+            //            TopoHelper(j, b, s);
+            //        }
+            //    }
+            //}
+            IEnumerator<Vertex> iterator = v.GetNeighbors().GetEnumerator();
+            while (iterator.MoveNext())
             {
-                j++;
-                if (!b[j])
+                i = v.GetNeighbors().IndexOf(iterator.Current);
+                if (!b[i])
                 {
-                    TopoHelper(j, b, s);
+                    //v = v.GetNeighbors().ElementAt(i);
+                    TopoHelper(i, b, iterator.Current, s);
                 }
             }
-
-            s.Push(Vertices.ElementAt(i));
+            s.Push(v);
         }
     }
 
@@ -100,12 +113,12 @@ namespace AutoSink
     {
         private string cityName;
         private int toll;
-        private LinkedList<Vertex> neighbors;
+        private List<Vertex> neighbors;
         public Vertex(string c, int t)
         {
             cityName = c;
             toll = t;
-            neighbors = new LinkedList<Vertex>();
+            neighbors = new List<Vertex>();
         }
 
         public string GetCityName()
@@ -120,10 +133,10 @@ namespace AutoSink
 
         public void AddNeighbor(Vertex v)
         {
-            neighbors.AddLast(v);
+            neighbors.Add(v);
         }
 
-        public LinkedList<Vertex> GetNeighbors()
+        public List<Vertex> GetNeighbors()
         {
             return neighbors;
         }
