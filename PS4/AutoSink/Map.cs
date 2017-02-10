@@ -175,7 +175,7 @@ namespace AutoSink
             try
             {
                 TopoSort(map);
-               
+
                 for (int i = 0; i < start.Count; i++)
                 {
                     string minToll = "NO";
@@ -209,9 +209,10 @@ namespace AutoSink
                     {
                         int j = 0;
                         int finish = sorted.IndexOf(map.FindVertex(startCity));
+                        int begin = sorted.IndexOf(map.FindVertex(endCity));
                         // Gets total costs
                         //sorted.IndexOf(map.FindVertex(endCity))
-                        for (j = sorted.IndexOf(map.FindVertex(endCity)); j < finish; j++)
+                        for (j = begin; j < finish; j++)
                         {
                             int toll = sorted.ElementAt(j).GetToll();
                             if (sorted.ElementAt(j).GetCityName() == endCity)
@@ -228,51 +229,59 @@ namespace AutoSink
                                 //int prevToll = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
                                 //foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
                                 //{
-                                //    prevToll = Math.Min(prevToll, v.GetTotalCost());
+                                //    if(tempGoal == sorted.IndexOf(v))
+                                //    {
+                                //        prevToll = Math.Min(prevToll, v.GetTotalCost());
+                                //        tempGoal = j;
+                                //    }
+
                                 //}
                                 //prevToll += toll;
                                 //sorted.ElementAt(j).TotalCost(prevToll);
                                 int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
-                               
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
                                     int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                    if(potentialCost <= tempGoalCost +toll)
+                                    if (j != 0)
+                                    {
+                                        if (potentialCost < tempGoalCost)
+                                        {
+                                            tempGoalCost = potentialCost;
+                                            tempGoal = j;
+                                            sorted.ElementAt(j).TotalCost(tempGoalCost);
+                                        }
+                                    }
+                                    if (potentialCost < tempGoalCost)
                                     {
                                         tempGoalCost = potentialCost;
                                         tempGoal = j;
                                         sorted.ElementAt(j).TotalCost(tempGoalCost);
-                                      
                                     }
                                 }
+
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
                                 {
-                                    int potential = toll + tempGoalCost;
-                                    if (potential <= tempGoalCost)
-                                    {
-                                        tempGoal = j;
-
-                                        sorted.ElementAt(j).TotalCost(potential);
-                                    }
-
+                                    tempGoal = j;
+                                    sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
                                 }
-
                             }
-
                         }
+
                         int totalToll = sorted.ElementAt(tempGoal).GetTotalCost();
                         //int totalToll = map.GetNeighbors(map.FindVertex(startCity)).ElementAt(0).GetTotalCost();
                         //foreach (Vertex v in map.GetNeighbors(map.FindVertex(startCity)))
                         //{
-                        //    totalToll = Math.Min(totalToll, v.GetTotalCost());
+                        //    if (tempGoal == sorted.IndexOf(v))
+                        //    {
+                        //        totalToll = v.GetTotalCost();
+                        //    }
                         //}
-
-                        
-
                         tolls.Add(totalToll.ToString());
-                    }
+                            }
 
-                }
+                        }
+                    
+                
             }
             catch (Exception e)
             { }
