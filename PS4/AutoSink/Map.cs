@@ -82,7 +82,7 @@ namespace AutoSink
                         t = Convert.ToInt32(currentLine[0]);
                         hcount++;
                     }
-                    else if (hcount > h && tcount < t)
+                    else if (hcount > h && tcount <= t)
                     {
                         tripStart.Add(currentLine[0]);
                         tripEnd.Add(currentLine[1]);
@@ -233,10 +233,11 @@ namespace AutoSink
                                 //prevToll += toll;
                                 //sorted.ElementAt(j).TotalCost(prevToll);
                                 int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
-                                if(j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
+                               
+                                if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
                                     int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                    if(potentialCost < tempGoalCost)
+                                    if(potentialCost <= tempGoalCost)
                                     {
                                         tempGoalCost = potentialCost;
                                         tempGoal = j;
@@ -244,12 +245,12 @@ namespace AutoSink
                                       
                                     }
                                 }
-                                if ( j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
+                                if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
                                 {
                                     tempGoal = j;
-                          
+
                                     sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
-                                    
+
                                 }
 
                             }
@@ -273,12 +274,6 @@ namespace AutoSink
             { }
             return tolls;
         }
-
-
-
-
-
-
 
         public class Graph
         {
