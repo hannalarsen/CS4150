@@ -230,22 +230,15 @@ namespace AutoSink
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
                                     int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                    if (j != begin)
-                                    {
-                                        if (potentialCost < tempGoalCost)
-                                        {
-                                            tempGoalCost = potentialCost;
-                                            tempGoal = j;
-                                            sorted.ElementAt(j).TotalCost(tempGoalCost);
-                                        }
-                                    }
+                                   
                                     if (potentialCost < tempGoalCost)
-                                   {
+                                    {
                                         tempGoalCost = potentialCost;
                                         tempGoal = j;
                                         sorted.ElementAt(j).TotalCost(tempGoalCost);
                                     }
                                 }
+                                
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
                                 {
                                     tempGoal = j;
