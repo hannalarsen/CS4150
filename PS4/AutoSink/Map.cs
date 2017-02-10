@@ -175,11 +175,13 @@ namespace AutoSink
             try
             {
                 TopoSort(map);
+               
                 for (int i = 0; i < start.Count; i++)
                 {
                     string minToll = "NO";
                     string startCity = start.ElementAt(i);
                     string endCity = end.ElementAt(i);
+                    int tempGoal = sorted.IndexOf(map.FindVertex(endCity));
                     // If start and end destinations are the same
                     if (startCity == endCity)
                     {
@@ -223,21 +225,45 @@ namespace AutoSink
                             }
                             else
                             {
-                                int prevToll = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
-                                foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
+                                //int prevToll = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
+                                //foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
+                                //{
+                                //    prevToll = Math.Min(prevToll, v.GetTotalCost());
+                                //}
+                                //prevToll += toll;
+                                //sorted.ElementAt(j).TotalCost(prevToll);
+                                int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
+                                if(j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
-                                    prevToll = Math.Min(prevToll, v.GetTotalCost());
+                                    int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
+                                    if(potentialCost < tempGoalCost)
+                                    {
+                                        tempGoalCost = potentialCost;
+                                        tempGoal = j;
+                                        sorted.ElementAt(j).TotalCost(tempGoalCost);
+                                      
+                                    }
                                 }
-                                prevToll += toll;
-                                sorted.ElementAt(j).TotalCost(prevToll);
-                            }
-                        }
+                                if ( j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
+                                {
+                                    tempGoal = j;
+                          
+                                    sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
+                                    
+                                }
 
-                        int totalToll = map.GetNeighbors(map.FindVertex(startCity)).ElementAt(0).GetTotalCost();
-                        foreach (Vertex v in map.GetNeighbors(map.FindVertex(startCity)))
-                        {
-                            totalToll = Math.Min(totalToll, v.GetTotalCost());
+                            }
+
                         }
+                        int totalToll = sorted.ElementAt(tempGoal).GetTotalCost();
+                        //int totalToll = map.GetNeighbors(map.FindVertex(startCity)).ElementAt(0).GetTotalCost();
+                        //foreach (Vertex v in map.GetNeighbors(map.FindVertex(startCity)))
+                        //{
+                        //    totalToll = Math.Min(totalToll, v.GetTotalCost());
+                        //}
+
+                        
+
                         tolls.Add(totalToll.ToString());
                     }
 
@@ -248,22 +274,6 @@ namespace AutoSink
             return tolls;
         }
 
-        private Vertex FindEnd(Vertex v, Vertex end)
-        {
-            Vertex HasEnd = end;
-            if (map.GetNeighbors(v).Contains(end))
-            {
-                HasEnd = v;
-            }
-            else
-            {
-                foreach (Vertex v1 in map.GetNeighbors(v))
-                {
-                    FindEnd(v1, end);
-                }
-            }
-            return HasEnd;
-        }
 
 
 
