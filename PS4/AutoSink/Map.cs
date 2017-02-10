@@ -226,25 +226,68 @@ namespace AutoSink
                             }
                             else
                             {
+                                //int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
+                                //int currentCost = 0;
+                                //if (tempGoal == 0)
+                                //{
+                                //    tempGoalCost = sorted.ElementAt(begin).GetTotalCost();
+                                //    tempGoal = j;
+                                //    sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
+
+                                //}
+                                //else
+                                //{
+                                //    if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
+                                //    {
+                                //        currentCost = toll + map.FindVertex(endCity).GetTotalCost();
+
+                                //        if (currentCost <= tempGoalCost)
+                                //        {
+                                //            tempGoalCost = currentCost;
+                                //            tempGoal = j;
+                                //            sorted.ElementAt(j).TotalCost(tempGoalCost);
+                                //        }
+                                //    }
+
+                                //    if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
+                                //    {
+                                //        currentCost = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
+                                //        foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
+                                //        {
+                                //            currentCost = Math.Min(currentCost, v.GetTotalCost());
+                                //            currentCost += toll;
+                                //            sorted.ElementAt(j).TotalCost(currentCost);
+                                //        }
+                                //        if (currentCost < tempGoalCost)
+                                //        {
+                                //            tempGoal = j;
+                                //            tempGoalCost = currentCost;
+                                //            sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
+                                //        }
+                                //    }
+                                //}
+
                                 int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
                                     int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                   
-                                    if (potentialCost < tempGoalCost)
+                                    if (j != begin)
                                     {
-                                        tempGoalCost = potentialCost;
-                                        tempGoal = j;
-                                        sorted.ElementAt(j).TotalCost(tempGoalCost);
+                                        if (potentialCost < tempGoalCost)
+                                        {
+                                            tempGoalCost = potentialCost;
+                                            tempGoal = j;
+                                            sorted.ElementAt(j).TotalCost(tempGoalCost);
+                                        }
                                     }
                                 }
-                                
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
                                 {
                                     tempGoal = j;
-                                    sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
+                                   sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
+
                                 }
-                            }
+                        }
                         }
                         int totalToll = sorted.ElementAt(tempGoal).GetTotalCost();
                         tolls.Add(totalToll.ToString());
