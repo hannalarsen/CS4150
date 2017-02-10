@@ -226,23 +226,11 @@ namespace AutoSink
                             }
                             else
                             {
-                                //int prevToll = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
-                                //foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
-                                //{
-                                //    if(tempGoal == sorted.IndexOf(v))
-                                //    {
-                                //        prevToll = Math.Min(prevToll, v.GetTotalCost());
-                                //        tempGoal = j;
-                                //    }
-
-                                //}
-                                //prevToll += toll;
-                                //sorted.ElementAt(j).TotalCost(prevToll);
                                 int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
                                 {
                                     int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                    if (j != 0)
+                                    if (j != begin)
                                     {
                                         if (potentialCost < tempGoalCost)
                                         {
@@ -252,13 +240,12 @@ namespace AutoSink
                                         }
                                     }
                                     if (potentialCost < tempGoalCost)
-                                    {
+                                   {
                                         tempGoalCost = potentialCost;
                                         tempGoal = j;
                                         sorted.ElementAt(j).TotalCost(tempGoalCost);
                                     }
                                 }
-
                                 if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
                                 {
                                     tempGoal = j;
@@ -266,22 +253,10 @@ namespace AutoSink
                                 }
                             }
                         }
-
                         int totalToll = sorted.ElementAt(tempGoal).GetTotalCost();
-                        //int totalToll = map.GetNeighbors(map.FindVertex(startCity)).ElementAt(0).GetTotalCost();
-                        //foreach (Vertex v in map.GetNeighbors(map.FindVertex(startCity)))
-                        //{
-                        //    if (tempGoal == sorted.IndexOf(v))
-                        //    {
-                        //        totalToll = v.GetTotalCost();
-                        //    }
-                        //}
                         tolls.Add(totalToll.ToString());
-                            }
-
-                        }
-                    
-                
+                    }
+                }   
             }
             catch (Exception e)
             { }
