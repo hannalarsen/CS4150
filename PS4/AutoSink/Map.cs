@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutoSink
 {
-    public class AutoSink
+    public class Map
     {
         private Dictionary<string, int> cities;
         private List<string> tripStart;
@@ -16,9 +16,10 @@ namespace AutoSink
         private Graph map;
         static void Main(string[] args)
         {
-            AutoSink a = new AutoSink();
+            Map a = new Map();
             a.GetInfo();
             a.CreateGraph();
+            a.FindMinToll(a.tripStart, a.tripEnd);
             foreach (string s in a.FindMinToll(a.tripStart, a.tripEnd))
             {
                 Console.WriteLine(s);
@@ -207,6 +208,7 @@ namespace AutoSink
                         int j = 0;
                         int finish = sorted.IndexOf(map.FindVertex(startCity));
                         // Gets total costs
+                        //sorted.IndexOf(map.FindVertex(endCity))
                         for (j = sorted.IndexOf(map.FindVertex(endCity)); j < finish; j++)
                         {
                             int toll = sorted.ElementAt(j).GetToll();
@@ -215,6 +217,10 @@ namespace AutoSink
                                 sorted.ElementAt(j).TotalCost(toll);
                             }
 
+                            else if (map.GetNeighbors(sorted.ElementAt(j)).Count == 0)
+                            {
+                                sorted.ElementAt(j).TotalCost(toll);
+                            }
                             else
                             {
                                 int prevToll = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
@@ -240,6 +246,23 @@ namespace AutoSink
             catch (Exception e)
             { }
             return tolls;
+        }
+
+        private Vertex FindEnd(Vertex v, Vertex end)
+        {
+            Vertex HasEnd = end;
+            if (map.GetNeighbors(v).Contains(end))
+            {
+                HasEnd = v;
+            }
+            else
+            {
+                foreach (Vertex v1 in map.GetNeighbors(v))
+                {
+                    FindEnd(v1, end);
+                }
+            }
+            return HasEnd;
         }
 
 
