@@ -65,8 +65,14 @@ namespace AutoSink
                     else if (ncount == n + 1)
                     {
                         h = Convert.ToInt32(currentLine[0]);
+                        if (h == 0)
+                        {
+                            ncount++;
+                            continue;
+                        }
                         ncount++;
                     }
+
                     // Adds highways
                     else if (ncount > n + 1 && hcount < h)
                     {
@@ -82,7 +88,7 @@ namespace AutoSink
                         t = Convert.ToInt32(currentLine[0]);
                         hcount++;
                     }
-                    else if (hcount > h && tcount <= t)
+                    else if (hcount > h && tcount < t)
                     {
                         tripStart.Add(currentLine[0]);
                         tripEnd.Add(currentLine[1]);
@@ -175,13 +181,17 @@ namespace AutoSink
             try
             {
                 TopoSort(map);
+                
 
                 for (int i = 0; i < start.Count; i++)
                 {
+                    foreach (Vertex v in sorted)
+                    {
+                        v.TotalCost(double.PositiveInfinity);
+                    }
                     string minToll = "NO";
                     string startCity = start.ElementAt(i);
                     string endCity = end.ElementAt(i);
-                    int tempGoal = sorted.IndexOf(map.FindVertex(endCity));
                     // If start and end destinations are the same
                     if (startCity == endCity)
                     {
@@ -204,93 +214,48 @@ namespace AutoSink
                         minToll = sum.ToString();
                         tolls.Add(minToll);
                     }
-
                     else
                     {
                         int j = 0;
                         int finish = sorted.IndexOf(map.FindVertex(startCity));
                         int begin = sorted.IndexOf(map.FindVertex(endCity));
+                        double minimumToll = double.PositiveInfinity;
                         // Gets total costs
-                        //sorted.IndexOf(map.FindVertex(endCity))
-                        for (j = begin; j < finish; j++)
+                        for (j = begin; j <= finish; j++)
                         {
-                            int toll = sorted.ElementAt(j).GetToll();
-                            if (sorted.ElementAt(j).GetCityName() == endCity)
+                            double toll = sorted.ElementAt(j).GetToll();
+                            if (j == begin)
                             {
                                 sorted.ElementAt(j).TotalCost(toll);
                             }
-
                             else if (map.GetNeighbors(sorted.ElementAt(j)).Count == 0)
                             {
-                                sorted.ElementAt(j).TotalCost(toll);
+                                sorted.ElementAt(j).TotalCost(double.PositiveInfinity);
                             }
-                            else
-                            {
-                                //int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
-                                //int currentCost = 0;
-                                //if (tempGoal == 0)
-                                //{
-                                //    tempGoalCost = sorted.ElementAt(begin).GetTotalCost();
-                                //    tempGoal = j;
-                                //    sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
-
-                                //}
-                                //else
-                                //{
-                                //    if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
-                                //    {
-                                //        currentCost = toll + map.FindVertex(endCity).GetTotalCost();
-
-                                //        if (currentCost <= tempGoalCost)
-                                //        {
-                                //            tempGoalCost = currentCost;
-                                //            tempGoal = j;
-                                //            sorted.ElementAt(j).TotalCost(tempGoalCost);
-                                //        }
-                                //    }
-
-                                //    if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
-                                //    {
-                                //        currentCost = map.GetNeighbors(sorted.ElementAt(j)).ElementAt(0).GetTotalCost();
-                                //        foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
-                                //        {
-                                //            currentCost = Math.Min(currentCost, v.GetTotalCost());
-                                //            currentCost += toll;
-                                //            sorted.ElementAt(j).TotalCost(currentCost);
-                                //        }
-                                //        if (currentCost < tempGoalCost)
-                                //        {
-                                //            tempGoal = j;
-                                //            tempGoalCost = currentCost;
-                                //            sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
-                                //        }
-                                //    }
-                                //}
-
-                                int tempGoalCost = sorted.ElementAt(tempGoal).GetTotalCost();
-                                if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(map.FindVertex(endCity)))
+                            else {
+                                foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
                                 {
-                                    int potentialCost = toll + map.FindVertex(endCity).GetTotalCost();
-                                    if (j != begin)
-                                    {
-                                        if (potentialCost < tempGoalCost)
-                                        {
-                                            tempGoalCost = potentialCost;
-                                            tempGoal = j;
-                                            sorted.ElementAt(j).TotalCost(tempGoalCost);
-                                        }
-                                    }
+                                    
+                                        minimumToll = Math.Min(minimumToll, v.GetTotalCost());
+                                    
                                 }
-                                if (j < finish && map.GetNeighbors(sorted.ElementAt(j)).Contains(sorted.ElementAt(tempGoal)))
+                                
+                                if (j == finish)
                                 {
-                                    tempGoal = j;
-                                   sorted.ElementAt(j).TotalCost(tempGoalCost + toll);
-
+                                    sorted.ElementAt(j).TotalCost(minimumToll);
+                                    continue;
                                 }
+                                minimumToll = minimumToll + toll;
+                                sorted.ElementAt(j).TotalCost(minimumToll);
+                            }
                         }
+                        
+                        if(minimumToll == double.PositiveInfinity)
+                        {
+                            tolls.Add("NO");
+                            continue;
                         }
-                        int totalToll = sorted.ElementAt(tempGoal).GetTotalCost();
-                        tolls.Add(totalToll.ToString());
+                        tolls.Add(minimumToll.ToString());
                     }
                 }   
             }
@@ -352,7 +317,7 @@ namespace AutoSink
         {
             private string cityName;
             private int toll;
-            private int totalCost;
+            private double totalCost;
             public Vertex(string c, int t)
             {
                 cityName = c;
@@ -369,12 +334,12 @@ namespace AutoSink
                 return toll;
             }
 
-            public void TotalCost(int prevCost)
+            public void TotalCost(double prevCost)
             {
                 totalCost = prevCost;
             }
 
-            public int GetTotalCost()
+            public double GetTotalCost()
             {
                 return totalCost;
             }
