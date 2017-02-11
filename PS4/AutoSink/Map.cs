@@ -234,10 +234,8 @@ namespace AutoSink
                             }
                             else {
                                 foreach (Vertex v in map.GetNeighbors(sorted.ElementAt(j)))
-                                {
-                                    
-                                        minimumToll = Math.Min(minimumToll, v.GetTotalCost());
-                                    
+                                {                
+                                        minimumToll = Math.Min(minimumToll, v.GetTotalCost());  
                                 }
                                 
                                 if (j == finish)
