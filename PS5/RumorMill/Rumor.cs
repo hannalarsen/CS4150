@@ -115,6 +115,7 @@ namespace RumorMill
                     string f1 = friends1.ElementAt(i);
                     string f2 = friends2.ElementAt(i);
                     school.AddFriend(school.FindStudent(f1), school.FindStudent(f2));
+                    school.AddFriend(school.FindStudent(f2), school.FindStudent(f1));
                 }
             }
             catch (Exception e)
