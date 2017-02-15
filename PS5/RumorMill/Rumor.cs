@@ -19,7 +19,11 @@ namespace RumorMill
             Rumor r = new Rumor();
             r.GetInfo();
             r.CreateSchool();
-            r.RumorReport();
+            //r.RumorReport();
+            foreach (string s in r.RumorReport())
+            {
+                Console.WriteLine(r);
+            }
         }
 
         public void GetInfo()
@@ -153,6 +157,11 @@ namespace RumorMill
 
         private void BFS(Student r)
         {
+            foreach (Student s in school.GetStudents())
+            {
+                s.SetDist(11000);
+                s.SetPrev(null); 
+            }
             r.SetDist(0);
             Queue<Student> q = new Queue<Student>();
             q.Enqueue(r);
