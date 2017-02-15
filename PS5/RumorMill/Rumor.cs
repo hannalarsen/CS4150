@@ -22,7 +22,7 @@ namespace RumorMill
             r.RumorReport();
             foreach (string s in r.RumorReport())
             {
-                Console.WriteLine(r);
+                Console.WriteLine(s);
             }
         }
 
@@ -140,16 +140,16 @@ namespace RumorMill
                 }
                 // Sorts by distance from rumor starter
                 sorted.Sort(Compare);
-                
-                school.GetStudents().Sort(Compare);
+
+                // school.GetStudents().Sort(Compare);
                 foreach (Student s1 in sorted)
                 {
                     rumorList = rumorList + s1.GetStudentName() + " ";
                 }
                 char[] whitespace = { ' ', '\t' };
-                
+
                 rumorReports.Add(rumorList.TrimEnd(whitespace));
-                
+
             }
 
             return rumorReports;
