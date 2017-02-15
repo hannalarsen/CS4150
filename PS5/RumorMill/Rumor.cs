@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RumorMill
 {
-    public class Rumor
+    public class Rumor : IComparer<Student>
     {
         private List<string> students;
         private List<string> friends1;
@@ -19,6 +19,7 @@ namespace RumorMill
             Rumor r = new Rumor();
             r.GetInfo();
             r.CreateSchool();
+            r.RumorReport();
         }
 
         public void GetInfo()
@@ -106,6 +107,7 @@ namespace RumorMill
                 foreach (string s in students)
                 {
                     Student s1 = new Student(s);
+                    school.AddStudent(s1);
                 }
 
                 for (int i = 0; i < friends1.Count; i++)
@@ -125,35 +127,58 @@ namespace RumorMill
             foreach (string r in rumorStarters)
             {
                 string rumorList = "";
-                BFS(r);
+                BFS(school.FindStudent(r));
+                List<Student> sorted = new List<Student>();
+                foreach (Student s in school.GetStudents())
+                {
+                    sorted.Add(s);
+                }
+                // Sorts by distance from rumor starter
+                sorted.Sort(Compare);
+                
+                school.GetStudents().Sort(Compare);
+                foreach (Student s1 in sorted)
+                {
+                    rumorList = rumorList + s1.GetStudentName() + " ";
+                }
+                rumorReports.Add(rumorList);
+                
             }
 
             return rumorReports;
         }
 
+
+
         private void BFS(Student r)
         {
-            double[] dist = new double[school.GetStudents().Count];
-            Student[] prev = new Student[school.GetStudents().Count];
-
-            for (int i = 0; i < school.GetStudents().Count; i++)
-            {
-                dist[i] = double.PositiveInfinity;
-                prev[i] = null;
-            }
-
-            dist[0] = 0;
+            r.SetDist(0);
             Queue<Student> q = new Queue<Student>();
             q.Enqueue(r);
 
             while (q.Count != 0)
             {
-                Student u = q.Dequeue();
-                for (int i = 0; i < school.GetFriends(u).Count; i++)
+               Student u = q.Dequeue();
+               foreach (Student v in school.GetFriends(u))
                 {
-
+                    if (v.GetDist() == 11000)
+                    {
+                        q.Enqueue(v);
+                        v.SetDist(u.GetDist() + 1);
+                        v.SetPrev(u);
+                    }
                 }
             }
+        }
+
+        public int Compare(Student x, Student y)
+        {
+            int c = x.GetDist().CompareTo(y.GetDist());
+            if (c == 0)
+            {
+                c = x.GetStudentName().CompareTo(y.GetStudentName());
+            }
+            return c;
         }
     }
 
@@ -168,6 +193,7 @@ namespace RumorMill
         public School()
         {
             s = new Dictionary<Student, List<Student>>();
+
         }
 
         public List<Student> GetStudents()
@@ -211,10 +237,14 @@ namespace RumorMill
     {
         private string studentName;
         private bool knows;
+        private Student prev;
+        private int dist;
         public Student(string n)
         {
             studentName = n;
             knows = false;
+            prev = null;
+            dist = 11000;
         }
 
         public string GetStudentName()
@@ -225,6 +255,26 @@ namespace RumorMill
         public bool DoesKnow()
         {
             return knows;
+        }
+
+        public void SetPrev(Student s1)
+        {
+            prev = s1;
+            
+        }
+
+        public Student GetPrev()
+        {
+            return prev;
+        }
+
+        public void SetDist(int d)
+        {
+            dist = d;
+        }
+        public int GetDist()
+        {
+            return dist;
         }
     }
 }
