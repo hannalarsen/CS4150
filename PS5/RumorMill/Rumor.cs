@@ -19,7 +19,7 @@ namespace RumorMill
             Rumor r = new Rumor();
             r.GetInfo();
             r.CreateSchool();
-            //r.RumorReport();
+            r.RumorReport();
             foreach (string s in r.RumorReport())
             {
                 Console.WriteLine(r);
@@ -146,7 +146,9 @@ namespace RumorMill
                 {
                     rumorList = rumorList + s1.GetStudentName() + " ";
                 }
-                rumorReports.Add(rumorList);
+                char[] whitespace = { ' ', '\t' };
+                
+                rumorReports.Add(rumorList.TrimEnd(whitespace));
                 
             }
 
