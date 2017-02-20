@@ -28,44 +28,49 @@ namespace GetShorty
 
         public void GetInfo()
         {
-            graphs = new List<Graph>();
-            nList = new List<int>();
-            string line = "";
-            char[] spaces = { ' ' };
-            string[] currentLine;
-            int m = 0;
-            int mCount = 0;
-
-            while ((line = Console.ReadLine()) != null && line != "")
+            try
             {
-                currentLine = line.Split();
-                if (currentLine.Length == 2)
+                graphs = new List<Graph>();
+                nList = new List<int>();
+                string line = "";
+                //char[] spaces = { ' ' };
+                string[] currentLine;
+                int m = 0;
+                int mCount = 0;
+
+                while ((line = Console.ReadLine()) != null && line != "")
                 {
-                    mCount = 0;
-                    currentn = Convert.ToInt32(currentLine[0]);
-                    nList.Add(currentn);
-                    m = Convert.ToInt32(currentLine[1]);
-                    startVertices = new List<string>();
-                    endVertices = new List<string>();
-                    factors = new List<double>();
-                    if (m == 0)
+                    currentLine = line.Split();
+                    if (currentLine.Length == 2)
                     {
-                        return;
+                        mCount = 0;
+                        currentn = Convert.ToInt32(currentLine[0]);
+                        nList.Add(currentn);
+                        m = Convert.ToInt32(currentLine[1]);
+                        startVertices = new List<string>();
+                        endVertices = new List<string>();
+                        factors = new List<double>();
+                        if (m == 0)
+                        {
+                            return;
+                        }
+                        continue;
                     }
-                    continue;
-                }
-                if (mCount < m)
-                {
-                    startVertices.Add(currentLine[0]);
-                    endVertices.Add(currentLine[1]);
-                    factors.Add(Convert.ToDouble(currentLine[2]));
-                    mCount++;
-                }
-                if (mCount == m)
-                {
-                    CreateGraph();
+                    if (mCount < m)
+                    {
+                        startVertices.Add(currentLine[0]);
+                        endVertices.Add(currentLine[1]);
+                        factors.Add(Convert.ToDouble(currentLine[2]));
+                        mCount++;
+                    }
+                    if (mCount == m)
+                    {
+                        CreateGraph();
+                    }
                 }
             }
+            catch (Exception e)
+            { }
         }
 
         public void CreateGraph()
@@ -87,39 +92,43 @@ namespace GetShorty
 
         public double FindBestPath(Graph g)
         {
-            Vertex start = g.FindVertex("0");
-            Vertex end = g.FindVertex((currentn - 1).ToString());
             double best = 1.0;
-
-            // Dijkstra's (modified)
-            foreach (Vertex u in g.GetVertices())
+            try
             {
-                u.SetDist(double.PositiveInfinity);
-                u.SetPrev(null);
-            }
-            start.SetDist(1);
+                Vertex start = g.FindVertex("0");
+               // Vertex end = g.FindVertex((currentn - 1).ToString());
 
-            PriorityQueue pq = new PriorityQueue();
-            pq.InsertOrChange(start, 1);
-
-            while (!pq.IsEmpty())
-            {
-                Vertex u = pq.DeleteMin();
-                //best = u.GetDist();
-                foreach (Edge e in g.GetNeighbors(u))
+                // Dijkstra's (modified)
+                foreach (Vertex u in g.GetVertices())
                 {
-                    if (e.GetEndVertex().GetDist() > best * e.GetWeight())
+                    u.SetDist(1);
+                    u.SetPrev(null);
+                }
+                start.SetDist(1);
+
+                PriorityQueue pq = new PriorityQueue();
+                pq.InsertOrChange(start, 1);
+
+                while (!pq.IsEmpty())
+                {
+                    Vertex u = pq.DeleteMin();
+                    //best = u.GetDist();
+                    foreach (Edge e in g.GetNeighbors(u))
                     {
-                        e.GetEndVertex().SetDist(u.GetDist() * e.GetWeight());
-                        e.GetEndVertex().SetPrev(u);
-                        pq.InsertOrChange(e.GetEndVertex(), e.GetEndVertex().GetDist());
-                        best = e.GetEndVertex().GetDist();
+                        if (e.GetEndVertex().GetDist() > best * e.GetWeight())
+                        {
+                            e.GetEndVertex().SetDist(u.GetDist() * e.GetWeight());
+                            e.GetEndVertex().SetPrev(u);
+                            pq.InsertOrChange(e.GetEndVertex(), e.GetEndVertex().GetDist());
+                            best = e.GetEndVertex().GetDist();
+                        }
                     }
                 }
             }
-
-           // best = Math.Round(best, 4);
+            catch (Exception e)
+            { }
             return best;
+
         }
     }
 
@@ -187,13 +196,13 @@ namespace GetShorty
             g = new Dictionary<Vertex, List<Edge>>();
         }
 
-        public List<Vertex> GetVertices()
+        public ICollection<Vertex> GetVertices()
         {
-            return g.Keys.ToList();
+            return g.Keys;
         }
 
         public Vertex FindVertex(string n)
-        {
+        { 
             foreach (Vertex v in g.Keys)
             {
                 if (v.GetName() == n)
