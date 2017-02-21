@@ -14,14 +14,15 @@ namespace GetShorty
         private List<string> endVertices;
         private List<double> factors;
         private List<int> nList;
-        private int currentn;  
+        private int currentn;
+        private Graph g1; 
         public static void Main(string[] args)
         {
             Short s = new Short();
             s.GetInfo();
             for (int i = 0; i < s.graphs.Count; i++)
             {
-                s.currentn = s.nList.ElementAt(i);
+                //s.currentn = s.nList.ElementAt(i);
                 Console.WriteLine(s.FindBestPath(s.graphs.ElementAt(i)).ToString( "#0.0000"));
             }
         }
@@ -37,6 +38,7 @@ namespace GetShorty
                 string[] currentLine;
                 int m = 0;
                 int mCount = 0;
+                
 
                 while ((line = Console.ReadLine()) != null && line != "")
                 {
@@ -45,27 +47,37 @@ namespace GetShorty
                     {
                         mCount = 0;
                         currentn = Convert.ToInt32(currentLine[0]);
-                        nList.Add(currentn);
+                        //nList.Add(currentn);
                         m = Convert.ToInt32(currentLine[1]);
-                        startVertices = new List<string>();
-                        endVertices = new List<string>();
-                        factors = new List<double>();
+                        g1 = new Graph();
+
+                        for (int i = 0; i < currentn; i++)
+                        {
+                            Vertex v1 = new Vertex(i.ToString());
+                            g1.AddVertex(v1);
+                        }
+                        //startVertices = new List<string>();
+                        //endVertices = new List<string>();
+                        //factors = new List<double>();
                         if (m == 0)
                         {
                             return;
                         }
                         continue;
                     }
+
                     if (mCount < m)
                     {
-                        startVertices.Add(currentLine[0]);
-                        endVertices.Add(currentLine[1]);
-                        factors.Add(Convert.ToDouble(currentLine[2]));
+                        //startVertices.Add(currentLine[0]);
+                        //endVertices.Add(currentLine[1]);
+                        //factors.Add(Convert.ToDouble(currentLine[2]));
+                        CreateGraph(g1, currentLine[0], currentLine[1], Convert.ToDouble(currentLine[2]));
                         mCount++;
                     }
                     if (mCount == m)
                     {
-                        CreateGraph();
+                        //CreateGraph();
+                        graphs.Add(g1);
                     }
                 }
             }
@@ -73,21 +85,26 @@ namespace GetShorty
             { }
         }
 
-        public void CreateGraph()
+        public void CreateGraph(Graph g, string start, string end, double factor)
         {
-            Graph g1 = new Graph();
-            for (int i = 0; i < currentn; i++)
-            {
-                Vertex v1 = new Vertex(i.ToString());
-                g1.AddVertex(v1);
-            }
-            for (int j = 0; j < startVertices.Count; j++)
-            { 
-                Vertex startV = g1.FindVertex(startVertices.ElementAt(j));
-                Vertex endV = g1.FindVertex(endVertices.ElementAt(j));
-                g1.AddNeighbor(startV, endV, factors.ElementAt(j));
-            }
-            graphs.Add(g1);
+            //Graph g1 = new Graph();
+            //for (int i = 0; i < currentn; i++)
+            //{
+            //    Vertex v1 = new Vertex(i.ToString());
+            //    g1.AddVertex(v1);
+            //}
+            //for (int j = 0; j < startVertices.Count; j++)
+            //{ 
+            //    Vertex startV = g1.FindVertex(startVertices.ElementAt(j));
+            //    Vertex endV = g1.FindVertex(endVertices.ElementAt(j));
+            //    g1.AddNeighbor(startV, endV, factors.ElementAt(j));
+            //}
+            //graphs.Add(g1);
+
+            Vertex startV = g.FindVertex(start);
+            Vertex endV = g.FindVertex(end);
+            g.AddNeighbor(startV, endV, factor);
+            //return g;
         }
 
         public double FindBestPath(Graph g)
