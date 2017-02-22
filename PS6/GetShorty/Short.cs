@@ -25,7 +25,6 @@ namespace GetShorty
                 int m = 0;
                 int mCount = 0;
                 
-
                 while ((line = Console.ReadLine()) != null && line != "")
                 {
                     currentLine = line.Split();
@@ -34,6 +33,10 @@ namespace GetShorty
                         mCount = 0;
                         currentn = Convert.ToInt32(currentLine[0]);
                         m = Convert.ToInt32(currentLine[1]);
+                        if (m == 0)
+                        {
+                            return;
+                        }
                         g1 = new Graph();
 
                         for (int i = 0; i < currentn; i++)
@@ -42,10 +45,6 @@ namespace GetShorty
                             g1.AddVertex(v1);
                         }
 
-                        if (m == 0)
-                        {
-                            return;
-                        }
                         continue;
                     }
 
