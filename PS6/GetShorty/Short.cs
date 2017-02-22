@@ -8,33 +8,19 @@ namespace GetShorty
 {
     public class Short
     {
-
-        //private List<Graph> graphs;
-        //private List<string> startVertices;
-        //private List<string> endVertices;
-        //private List<double> factors;
-        //private List<int> nList;
         private int currentn;
         private Graph g1; 
         public static void Main(string[] args)
         {
             Short s = new Short();
             s.GetInfo();
-            //for (int i = 0; i < s.graphs.Count; i++)
-            //{
-            //    //s.currentn = s.nList.ElementAt(i);
-            //    Console.WriteLine(s.FindBestPath(s.graphs.ElementAt(i)).ToString( "#0.0000"));
-            //}
         }
 
         public void GetInfo()
         {
             try
             {
-               // graphs = new List<Graph>();
-                //nList = new List<int>();
                 string line = "";
-                //char[] spaces = { ' ' };
                 string[] currentLine;
                 int m = 0;
                 int mCount = 0;
@@ -47,7 +33,6 @@ namespace GetShorty
                     {
                         mCount = 0;
                         currentn = Convert.ToInt32(currentLine[0]);
-                        //nList.Add(currentn);
                         m = Convert.ToInt32(currentLine[1]);
                         g1 = new Graph();
 
@@ -56,9 +41,7 @@ namespace GetShorty
                             Vertex v1 = new Vertex(i.ToString());
                             g1.AddVertex(v1);
                         }
-                        //startVertices = new List<string>();
-                        //endVertices = new List<string>();
-                        //factors = new List<double>();
+
                         if (m == 0)
                         {
                             return;
@@ -68,16 +51,11 @@ namespace GetShorty
 
                     if (mCount < m)
                     {
-                        //startVertices.Add(currentLine[0]);
-                        //endVertices.Add(currentLine[1]);
-                        //factors.Add(Convert.ToDouble(currentLine[2]));
                         CreateGraph(g1, currentLine[0], currentLine[1], Convert.ToDouble(currentLine[2]));
                         mCount++;
                     }
                     if (mCount == m)
                     {
-                        //CreateGraph();
-                        //graphs.Add(g1);
                         Console.WriteLine(FindBestPath(g1).ToString("#0.0000"));
                     }
                 }
@@ -88,24 +66,9 @@ namespace GetShorty
 
         public void CreateGraph(Graph g, string start, string end, double factor)
         {
-            //Graph g1 = new Graph();
-            //for (int i = 0; i < currentn; i++)
-            //{
-            //    Vertex v1 = new Vertex(i.ToString());
-            //    g1.AddVertex(v1);
-            //}
-            //for (int j = 0; j < startVertices.Count; j++)
-            //{ 
-            //    Vertex startV = g1.FindVertex(startVertices.ElementAt(j));
-            //    Vertex endV = g1.FindVertex(endVertices.ElementAt(j));
-            //    g1.AddNeighbor(startV, endV, factors.ElementAt(j));
-            //}
-            //graphs.Add(g1);
-
             Vertex startV = g.FindVertex(start);
             Vertex endV = g.FindVertex(end);
             g.AddNeighbor(startV, endV, factor);
-            //return g;
         }
 
         public double FindBestPath(Graph g)
@@ -128,7 +91,7 @@ namespace GetShorty
 
                 while (!pq.IsEmpty())
                 {
-                    Vertex u = pq.DeleteMin();
+                    Vertex u = pq.DeleteMax();
                     foreach (Edge e in g.GetNeighbors(u))
                     {
                         if (e.GetEndVertex().GetDist() > best * e.GetWeight())
@@ -152,9 +115,11 @@ namespace GetShorty
     {
         private Dictionary<Vertex, double> ar;
 
+
         public PriorityQueue()
         {
             ar = new Dictionary<Vertex, double>();
+  
         }
 
         public bool IsEmpty()
@@ -168,21 +133,21 @@ namespace GetShorty
 
         public void InsertOrChange(Vertex v, double w)
         {
-            if (ar.ContainsKey(v))
+            try
+            {
+                v.SetDist(w);
+                ar.Add(v, w);
+            }
+            catch (ArgumentException e)
             {
                 double value;
                 ar.TryGetValue(v, out value);
                 v.SetDist(w);
                 value = w;
             }
-            else
-            {
-                v.SetDist(w);
-                ar.Add(v, w);
-            }
         }
 
-        public Vertex DeleteMin()
+        public Vertex DeleteMax()
         {
             double max = ar.Values.First();
             Vertex maxKey = ar.Keys.First();
