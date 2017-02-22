@@ -9,30 +9,30 @@ namespace GetShorty
     public class Short
     {
 
-        private List<Graph> graphs;
-        private List<string> startVertices;
-        private List<string> endVertices;
-        private List<double> factors;
-        private List<int> nList;
+        //private List<Graph> graphs;
+        //private List<string> startVertices;
+        //private List<string> endVertices;
+        //private List<double> factors;
+        //private List<int> nList;
         private int currentn;
         private Graph g1; 
         public static void Main(string[] args)
         {
             Short s = new Short();
             s.GetInfo();
-            for (int i = 0; i < s.graphs.Count; i++)
-            {
-                //s.currentn = s.nList.ElementAt(i);
-                Console.WriteLine(s.FindBestPath(s.graphs.ElementAt(i)).ToString( "#0.0000"));
-            }
+            //for (int i = 0; i < s.graphs.Count; i++)
+            //{
+            //    //s.currentn = s.nList.ElementAt(i);
+            //    Console.WriteLine(s.FindBestPath(s.graphs.ElementAt(i)).ToString( "#0.0000"));
+            //}
         }
 
         public void GetInfo()
         {
             try
             {
-                graphs = new List<Graph>();
-                nList = new List<int>();
+               // graphs = new List<Graph>();
+                //nList = new List<int>();
                 string line = "";
                 //char[] spaces = { ' ' };
                 string[] currentLine;
@@ -77,7 +77,8 @@ namespace GetShorty
                     if (mCount == m)
                     {
                         //CreateGraph();
-                        graphs.Add(g1);
+                        //graphs.Add(g1);
+                        Console.WriteLine(FindBestPath(g1).ToString("#0.0000"));
                     }
                 }
             }
@@ -113,7 +114,6 @@ namespace GetShorty
             try
             {
                 Vertex start = g.FindVertex("0");
-               // Vertex end = g.FindVertex((currentn - 1).ToString());
 
                 // Dijkstra's (modified)
                 foreach (Vertex u in g.GetVertices())
@@ -129,7 +129,6 @@ namespace GetShorty
                 while (!pq.IsEmpty())
                 {
                     Vertex u = pq.DeleteMin();
-                    //best = u.GetDist();
                     foreach (Edge e in g.GetNeighbors(u))
                     {
                         if (e.GetEndVertex().GetDist() > best * e.GetWeight())
