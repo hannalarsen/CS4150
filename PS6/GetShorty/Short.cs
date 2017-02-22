@@ -39,11 +39,11 @@ namespace GetShorty
                         }
                         g1 = new Graph();
 
-                        for (int i = 0; i < currentn; i++)
-                        {
-                            Vertex v1 = new Vertex(i.ToString());
-                            g1.AddVertex(v1);
-                        }
+                        //for (int i = 0; i < currentn; i++)
+                        //{
+                        //    Vertex v1 = new Vertex(i.ToString());
+                        //    g1.AddVertex(v1);
+                        //}
 
                         continue;
                     }
@@ -66,7 +66,17 @@ namespace GetShorty
         public void CreateGraph(Graph g, string start, string end, double factor)
         {
             Vertex startV = g.FindVertex(start);
+            if (startV == null)
+            {
+                startV = new Vertex(start);
+                g.AddVertex(startV);
+            }
             Vertex endV = g.FindVertex(end);
+            if (endV == null)
+            {
+                endV = new Vertex(end);
+                g.AddVertex(endV);
+            }
             g.AddNeighbor(startV, endV, factor);
         }
 
