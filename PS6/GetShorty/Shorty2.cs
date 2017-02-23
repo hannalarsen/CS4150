@@ -10,6 +10,7 @@ namespace GetShorty
     {
         Dictionary<string, double> weights;
         private Graph2 g1;
+        int n;
         public static void Main(string[] args)
         {
             Shorty2 s = new Shorty2();
@@ -32,12 +33,19 @@ namespace GetShorty
                     {
                         mCount = 0;
                         m = Convert.ToInt32(currentLine[1]);
+                        n = Convert.ToInt32(currentLine[0]);
                         if (m == 0)
                         {
                             return;
                         }
                         g1 = new Graph2();
                         weights = new Dictionary<string, double>();
+                        for (int i = 0; i < n; i++)
+                        {
+                            g1.Add(i.ToString());
+                            weights.Add(i.ToString(), 0);
+                        }
+                        
 
                         continue;
                     }
@@ -59,24 +67,25 @@ namespace GetShorty
 
         public void AddToGraph(Graph2 g, string v1, string v2, double f)
         {
-            if (!g.GetVertices().Contains(v1))
-            {
-                g.Add(v1);
-                weights.Add(v1, 1);
-            }
-            if(!g.GetVertices().Contains(v2))
-            {
-                g.Add(v2);
-                weights.Add(v2, 1);
-            }
+            //if (!g.GetVertices().Contains(v1))
+            //{
+            //    g.Add(v1);
+            //    weights.Add(v1, 0);
+            //}
+            //if(!g.GetVertices().Contains(v2))
+            //{
+            //    g.Add(v2);
+            //    weights.Add(v2, 0);
+            //}
 
             g.AddNeighbor(v1, v2, f);
+            g.AddNeighbor(v2, v1, f);
             
         }
 
         public double FindBestPath(Graph2 g)
         {
-            double best = 1.0;
+           // double best = 1.0;
             try
             {
                 string start = "0";
@@ -87,6 +96,7 @@ namespace GetShorty
                 //    weights[u] = 1.0;
                 //}
                 //start.SetDist(1);
+                weights[start] = 1;
 
                 PriorityQueue2 pq = new PriorityQueue2();
                 pq.InsertOrChange(start, 1);
@@ -96,12 +106,10 @@ namespace GetShorty
                     string u = pq.DeleteMax();
                     foreach (Edge2 e in g.GetNeighbors(u))
                     {
-                        if (weights[e.GetEndVertex()] > best * e.GetWeight())
+                        if (weights[e.GetEndVertex()]  < weights[u] * e.GetFactor())
                         {
-                            weights[e.GetEndVertex()] = (weights[u] * e.GetWeight());
-                            //e.GetEndVertex().SetPrev(u);
+                            weights[e.GetEndVertex()] = (weights[u] * e.GetFactor());
                             pq.InsertOrChange(e.GetEndVertex(), weights[e.GetEndVertex()]);
-                            best = weights[e.GetEndVertex()];
                         }
                     }
                 }
@@ -109,6 +117,7 @@ namespace GetShorty
             catch (Exception e)
             {
             }
+            double best = weights[(n - 1).ToString()];
             return best;
         }
 
@@ -220,7 +229,7 @@ namespace GetShorty
             return end;
         }
 
-        public double GetWeight()
+        public double GetFactor()
         {
             return weight;
         }
