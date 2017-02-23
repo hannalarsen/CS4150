@@ -10,11 +10,11 @@ namespace GetShorty
     {
         private int currentn;
         private Graph g1; 
-        public static void Main(string[] args)
-        {
-            Short s = new Short();
-            s.GetInfo();
-        }
+        //public static void Main(string[] args)
+        //{
+        //    Short s = new Short();
+        //    s.GetInfo();
+        //}
 
         public void GetInfo()
         {
