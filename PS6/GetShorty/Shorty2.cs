@@ -45,8 +45,6 @@ namespace GetShorty
                             g1.Add(i.ToString());
                             weights.Add(i.ToString(), 0);
                         }
-                        
-
                         continue;
                     }
 
@@ -67,17 +65,6 @@ namespace GetShorty
 
         public void AddToGraph(Graph2 g, string v1, string v2, double f)
         {
-            //if (!g.GetVertices().Contains(v1))
-            //{
-            //    g.Add(v1);
-            //    weights.Add(v1, 0);
-            //}
-            //if(!g.GetVertices().Contains(v2))
-            //{
-            //    g.Add(v2);
-            //    weights.Add(v2, 0);
-            //}
-
             g.AddNeighbor(v1, v2, f);
             g.AddNeighbor(v2, v1, f);
             
@@ -85,17 +72,11 @@ namespace GetShorty
 
         public double FindBestPath(Graph2 g)
         {
-           // double best = 1.0;
             try
             {
                 string start = "0";
 
                 // Dijkstra's (modified)
-                //foreach (string u in weights.Keys)
-                //{
-                //    weights[u] = 1.0;
-                //}
-                //start.SetDist(1);
                 weights[start] = 1;
 
                 PriorityQueue2 pq = new PriorityQueue2();
