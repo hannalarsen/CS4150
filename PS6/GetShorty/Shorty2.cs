@@ -109,12 +109,10 @@ namespace GetShorty
         {
             private List<KeyValuePair<string, double>> nodes;
             private int[] indexes;
-            //private Dictionary<string, int> indexes;
 
             public PriorityQueue2(int n)
             {
                 nodes = new List<KeyValuePair<string, double>>();
-                //indexes = new Dictionary<string, int>();
                 indexes = new int[n];
                 for (int i = 0; i < indexes.Length; i++)
                 {
@@ -139,10 +137,8 @@ namespace GetShorty
 
                 //change
                 if (indexes[i] > -1)
-                //if (indexes.ContainsKey(v))
                 {
                     nodes[indexes[i]] = kvp;
-                    //indexes[i] = nodes.IndexOf(kvp);
                     if (size > 1)
                     {
                         HeapifyUp(size - 1);
@@ -154,7 +150,6 @@ namespace GetShorty
                 else
                 {
                     nodes.Add(kvp);
-                    //indexes.Add(v, nodes.IndexOf(kvp));
                     indexes[i] = nodes.Count - 1;
                     size++;
                     if (size > 1)
@@ -168,8 +163,6 @@ namespace GetShorty
 
             private void HeapifyUp(int i)
             {
-                //KeyValuePair<string, double> current = nodes[i];
-                //KeyValuePair<string, double> parent = nodes[(i - 1) / 2];
                 while (i > 0)
                 {
                     int iParent = (i - 1) / 2;
@@ -192,24 +185,16 @@ namespace GetShorty
                 nodes[p2] = temp;
                 indexes[Convert.ToInt32(nodes[p1].Key)] = p1;
                 indexes[Convert.ToInt32(nodes[p2].Key)] = p2;
-                //indexes[Convert.ToInt32(nodes[p1].Key)] = nodes.IndexOf(nodes[p1]);
-                //indexes[Convert.ToInt32(nodes[p2].Key)] = nodes.IndexOf(nodes[p2]);
-                //indexes[nodes[p1].Key] = nodes.IndexOf(nodes[p1]);
-                //indexes[nodes[p2].Key] = nodes.IndexOf(nodes[p2]);
-                
+
             }
 
             public string DeleteMax()
             {
-                //KeyValuePair<string, double> max = nodes[0];
-                
                 string maxKey = nodes[0].Key;
                 nodes[0] = nodes[nodes.Count - 1];
                 indexes[Convert.ToInt32(nodes[0].Key)] = 0;
-                //indexes[nodes[0].Key] = 0;
-                nodes.Remove(nodes[nodes.Count -1]);
+                nodes.RemoveAt(nodes.Count - 1);
                 indexes[Convert.ToInt32(maxKey)] = -1;
-                //indexes[maxKey] = -1;
                 HeapifyDown(0);
                 return maxKey;
             }
@@ -222,7 +207,7 @@ namespace GetShorty
                     return;
                 }
 
-                while (n < nodes.Count)
+                while (true)
                 {
                     int largest = n;
                     int left = 2 * n + 1;
@@ -243,7 +228,10 @@ namespace GetShorty
                         Swap(largest, n);
                         n = largest;
                     }
-                    n = left;
+                    else
+                    {
+                        break;
+                    }
                 }
              
             }
