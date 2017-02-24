@@ -161,72 +161,77 @@ namespace GetShorty
             {
                 KeyValuePair<string, double> current = nodes.ElementAt(i);
                 KeyValuePair<string, double> parent = nodes.ElementAt((i - 1) / 2);
-                if (i == 0)
+                while (i > 0)
                 {
-                    return;
+                    int iParent = (i - 1) / 2;
+                    if (current.Value > parent.Value)
+                    {
+                       Swap(i, iParent);
+                        i = iParent;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
+            }
 
-                if (current.Value > parent.Value)
-                {
-                    nodes[(i - 1) / 2] = current;
-                    nodes[i] = parent;
-                    indexes[Convert.ToInt32(current.Key)] = (i - 1) / 2;
-                    indexes[Convert.ToInt32(parent.Key)] = i;
-                    HeapifyUp((i) / 2);
-                }
+            private void Swap(int p1, int p2)
+            {
+                KeyValuePair<string, double> temp = nodes[p1];
+                nodes[p1] = nodes[p2];
+                nodes[p2] = temp;
+                indexes[Convert.ToInt32(nodes[p1].Key)] = nodes.IndexOf(nodes[p1]);
+                indexes[Convert.ToInt32(nodes[p2].Key)] = nodes.IndexOf(nodes[p2]);
             }
 
             public string DeleteMax()
             {
-                KeyValuePair<string, double> max = nodes.ElementAt(0);
+                KeyValuePair<string, double> max = nodes[0];
                 
                 string maxKey = max.Key;
-                nodes.Remove(nodes.ElementAt(0));
+                nodes[0] = nodes[nodes.Count - 1];
+                indexes[Convert.ToInt32(nodes[0].Key)] = 0;
+                nodes.Remove(nodes[nodes.Count -1]);
                 indexes[Convert.ToInt32(maxKey)] = -1;
-                int last = nodes.Count - 1;
-                if (nodes.Count > 0)
-                {
-                    //nodes[0] = nodes.ElementAt(last);
-                    //indexes[Convert.ToInt32(nodes.ElementAt(last).Key)] = 0;
-                    
-                    if (last > 0)
-                    {
-                        HeapifyDown(last);
-                    }
-                    last--;
-                }
+                HeapifyDown(0);
                 return maxKey;
             }
 
             private void HeapifyDown(int n)
             {
-                int i = 0;
-                KeyValuePair<string, double> current = nodes.ElementAt(i);
-                if (i == n)
+                if (n >= nodes.Count)
                 {
                     return;
                 }
 
-                if (current.Value < nodes.ElementAt((2 * i) + 1).Value)
+                while (true)
                 {
-                    nodes[i] = nodes.ElementAt((2 * i) + 1);
-                    nodes[(2 * i) + 1] = current;
+                    int largest = n;
+                    int left = 2 * n + 1;
+                    int right = 2 * n + 2;
 
-                    indexes[Convert.ToInt32(current.Key)] = nodes.IndexOf(current);
-                    indexes[Convert.ToInt32(nodes.ElementAt(i).Key)] = nodes.IndexOf(nodes.ElementAt(i));
-                    i = i * 2;
-                    HeapifyDown(i);
-                }
-                else if (current.Value < nodes.ElementAt(2 * i).Value)
-                {
-                    nodes[i] = nodes.ElementAt(2 * i);
-                    nodes[2 * i] = current;
+                    if (left < nodes.Count && (nodes[largest].Value < nodes[left].Value))
+                    {
+                        largest = left;
+                    }
 
-                    indexes[Convert.ToInt32(current.Key)] = nodes.IndexOf(current);
-                    indexes[Convert.ToInt32(nodes.ElementAt(i).Key)] = nodes.IndexOf(nodes.ElementAt(i));
-                    i = i * 2;
-                    HeapifyDown(i);
+                    if (right < nodes.Count && (nodes[largest].Value < nodes[right].Value))
+                    {
+                        largest = right;
+                    }
+
+                    if (largest != n)
+                    {
+                        Swap(largest, n);
+                        n = largest;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
+             
             }
 
 
