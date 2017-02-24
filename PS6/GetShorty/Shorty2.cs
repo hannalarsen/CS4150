@@ -67,7 +67,7 @@ namespace GetShorty
         {
             g.AddNeighbor(v1, v2, f);
             g.AddNeighbor(v2, v1, f);
-            
+
         }
 
         public double FindBestPath(Graph2 g)
@@ -79,7 +79,7 @@ namespace GetShorty
                 // Dijkstra's (modified)
                 weights[start] = 1;
 
-                PriorityQueue2 pq = new PriorityQueue2();
+                PriorityQueue2 pq = new PriorityQueue2(n);
                 pq.InsertOrChange(start, 1);
 
                 while (!pq.IsEmpty())
@@ -87,7 +87,7 @@ namespace GetShorty
                     string u = pq.DeleteMax();
                     foreach (Edge2 e in g.GetNeighbors(u))
                     {
-                        if (weights[e.GetEndVertex()]  < weights[u] * e.GetFactor())
+                        if (weights[e.GetEndVertex()] < weights[u] * e.GetFactor())
                         {
                             weights[e.GetEndVertex()] = (weights[u] * e.GetFactor());
                             pq.InsertOrChange(e.GetEndVertex(), weights[e.GetEndVertex()]);
@@ -104,23 +104,24 @@ namespace GetShorty
 
 
 
-
-
-
         private class PriorityQueue2
         {
-            private Dictionary<string, double> ar;
+            private List<KeyValuePair<string, double>> nodes;
+            private int[] indexes;
 
-
-            public PriorityQueue2()
+            public PriorityQueue2(int n)
             {
-                ar = new Dictionary<string, double>();
-
+                nodes = new List<KeyValuePair<string, double>>();
+                indexes = new int[n];
+                for (int i = 0; i < indexes.Length; i++)
+                {
+                    indexes[i] = -1;
+                }
             }
 
             public bool IsEmpty()
             {
-                if (ar.Count == 0)
+                if (nodes.Count == 0)
                 {
                     return true;
                 }
@@ -129,92 +130,212 @@ namespace GetShorty
 
             public void InsertOrChange(string v, double w)
             {
-                try
+                int i = Convert.ToInt32(v);
+                int size = nodes.Count;
+                KeyValuePair<string, double> kvp = new KeyValuePair<string, double>(v, w);
+                if (indexes[i] > -1)
                 {
-                    ar.Add(v, w);
+                    nodes[indexes[i]] = kvp;
+                    if (size > 1)
+                    {
+                        HeapifyUp(size);
+                    }
+                    indexes[i] = nodes.IndexOf(kvp);
                 }
-                catch (ArgumentException e)
+                else
                 {
-                    ar[v] = w;
+                    nodes.Add(kvp);
+                    size++;
+                    if (size > 1)
+                    {
+                        HeapifyUp(size - 1);
+                        
+                    }
+                    indexes[i] = nodes.IndexOf(kvp);
+                }
+            }
+
+            private void HeapifyUp(int i)
+            {
+                KeyValuePair<string, double> current = nodes.ElementAt(i);
+                KeyValuePair<string, double> parent = nodes.ElementAt((i - 1) / 2);
+                if (i == 0)
+                {
+                    return;
+                }
+
+                if (current.Value > parent.Value)
+                {
+                    nodes[(i - 1) / 2] = current;
+                    nodes[i] = parent;
+                    HeapifyUp((i - 1) / 2);
                 }
             }
 
             public string DeleteMax()
             {
-                double max = ar.Values.First();
-                string maxKey = ar.Keys.First();
-                foreach (KeyValuePair<string, double> kvp in ar)
+                KeyValuePair<string, double> max = nodes.ElementAt(0);
+                
+                string maxKey = max.Key;
+                nodes.Remove(nodes.ElementAt(0));
+                indexes[Convert.ToInt32(maxKey)] = -1;
+                int last = nodes.Count - 1;
+                if (nodes.Count > 0)
                 {
-                    if (kvp.Value > max)
+                    nodes[0] = nodes.ElementAt(last);
+                    indexes[Convert.ToInt32(nodes.ElementAt(last).Key)] = 0;
+                    last--;
+                    if (last > 0)
                     {
-                        max = kvp.Value;
-                        maxKey = kvp.Key;
+                        HeapifyDown(last);
                     }
                 }
-                ar.Remove(maxKey);
                 return maxKey;
+            }
+
+            private void HeapifyDown(int n)
+            {
+                int i = 0;
+                KeyValuePair<string, double> current = nodes.ElementAt(i);
+                if (i == n)
+                {
+                    return;
+                }
+
+                if (current.Value < nodes.ElementAt((2 * i) - 1).Value)
+                {
+                    nodes[i] = nodes.ElementAt((2 * i) - 1);
+                    nodes[(2 * i) - 1] = current;
+
+                    indexes[Convert.ToInt32(current.Key)] = nodes.IndexOf(current);
+                    indexes[Convert.ToInt32(nodes.ElementAt(i).Key)] = nodes.IndexOf(nodes.ElementAt(i));
+                    i = i * 2;
+                    HeapifyDown(i);
+                }
+                else if (current.Value < nodes.ElementAt(2 * i).Value)
+                {
+                    nodes[i] = nodes.ElementAt(2 * i);
+                    nodes[2 * i] = current;
+
+                    indexes[Convert.ToInt32(current.Key)] = nodes.IndexOf(current);
+                    indexes[Convert.ToInt32(nodes.ElementAt(i).Key)] = nodes.IndexOf(nodes.ElementAt(i));
+                    i = i * 2;
+                    HeapifyDown(i);
+                }
+            }
+
+
+            //private class PriorityQueue2
+            //{
+            //    private Dictionary<string, double> ar;
+
+
+            //    public PriorityQueue2()
+            //    {
+            //        ar = new Dictionary<string, double>();
+
+            //    }
+
+            //    public bool IsEmpty()
+            //    {
+            //        if (ar.Count == 0)
+            //        {
+            //            return true;
+            //        }
+            //        return false;
+            //    }
+
+            //    public void InsertOrChange(string v, double w)
+            //    {
+            //        try
+            //        {
+            //            ar.Add(v, w);
+            //        }
+            //        catch (ArgumentException e)
+            //        {
+            //            ar[v] = w;
+            //        }
+            //    }
+
+            //    public string DeleteMax()
+            //    {
+            //        //double max = ar.Values.First();
+            //        //string maxKey = ar.Keys.First();
+            //        //foreach (KeyValuePair<string, double> kvp in ar)
+            //        //{
+            //        //    if (kvp.Value > max)
+            //        //    {
+            //        //        max = kvp.Value;
+            //        //        maxKey = kvp.Key;
+            //        //    }
+            //        //}
+            //        //ar.Remove(maxKey);
+            //        //return maxKey;
+
+            //        double max = ar.Max(kvp => kvp.Value);
+            //        return ar.Where(kvp => kvp.Value == max).First().Key;
+            //    }
+            //}
+        }
+
+
+        public class Graph2
+        {
+            private Dictionary<string, List<Edge2>> g;
+
+            public Graph2()
+            {
+                g = new Dictionary<string, List<Edge2>>();
+            }
+
+            public void Add(string n)
+            {
+                g.Add(n, new List<Edge2>());
+            }
+
+            public void AddNeighbor(string v1, string v2, double w)
+            {
+                Edge2 e1 = new Edge2(v2, w);
+                List<Edge2> value;
+                g.TryGetValue(v1, out value);
+                value.Add(e1);
+            }
+
+            public List<Edge2> GetNeighbors(string v1)
+            {
+                List<Edge2> value;
+                g.TryGetValue(v1, out value);
+                return value;
+            }
+
+            public ICollection<string> GetVertices()
+            {
+                return g.Keys;
+            }
+
+
+        }
+        public class Edge2
+        {
+            private string end;
+            private double weight;
+
+            public Edge2(string v2, double d)
+            {
+                end = v2;
+                weight = d;
+            }
+
+            public string GetEndVertex()
+            {
+                return end;
+            }
+
+            public double GetFactor()
+            {
+                return weight;
             }
         }
     }
-
-
-    public class Graph2
-    {
-        private Dictionary<string, List<Edge2>> g;
-
-        public Graph2()
-        {
-            g = new Dictionary<string, List<Edge2>>();
-        }
-
-        public void Add(string n)
-        {
-            g.Add(n, new List<Edge2>());
-        }
-
-        public void AddNeighbor(string v1, string v2, double w)
-        {
-            Edge2 e1 = new Edge2(v2, w);
-            List<Edge2> value;
-            g.TryGetValue(v1, out value);
-            value.Add(e1);
-        }
-
-        public List<Edge2> GetNeighbors(string v1)
-        {
-            List<Edge2> value;
-            g.TryGetValue(v1, out value);
-            return value;
-        }
-
-        public ICollection<string> GetVertices()
-        {
-            return g.Keys;
-        }
-
-
-    }
-    public class Edge2
-    {
-        private string end;
-        private double weight;
-
-        public Edge2(string v2, double d)
-        {
-            end = v2;
-            weight = d;
-        }
-
-        public string GetEndVertex()
-        {
-            return end;
-        }
-
-        public double GetFactor()
-        {
-            return weight;
-        }
-    }
-
 
 }
