@@ -11,6 +11,7 @@ namespace GetShorty
         Dictionary<string, double> weights;
         private Graph2 g1;
         int n;
+
         public static void Main(string[] args)
         {
             Shorty2 s = new Shorty2();
@@ -167,12 +168,12 @@ namespace GetShorty
 
             private void HeapifyUp(int i)
             {
-                KeyValuePair<string, double> current = nodes[i];
-                KeyValuePair<string, double> parent = nodes[(i - 1) / 2];
+                //KeyValuePair<string, double> current = nodes[i];
+                //KeyValuePair<string, double> parent = nodes[(i - 1) / 2];
                 while (i > 0)
                 {
                     int iParent = (i - 1) / 2;
-                    if (current.Value > parent.Value)
+                    if (nodes[i].Value > nodes[iParent].Value)
                     {
                        Swap(i, iParent);
                         i = iParent;
