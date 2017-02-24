@@ -107,16 +107,18 @@ namespace GetShorty
         private class PriorityQueue2
         {
             private List<KeyValuePair<string, double>> nodes;
-            private int[] indexes;
+            //private int[] indexes;
+            private Dictionary<string, int> indexes;
 
             public PriorityQueue2(int n)
             {
                 nodes = new List<KeyValuePair<string, double>>();
-                indexes = new int[n];
-                for (int i = 0; i < indexes.Length; i++)
-                {
-                    indexes[i] = -1;
-                }
+                indexes = new Dictionary<string, int>();
+                //indexes = new int[n];
+                //for (int i = 0; i < indexes.Length; i++)
+                //{
+                //    indexes[i] = -1;
+                //}
             }
 
             public bool IsEmpty()
@@ -130,23 +132,29 @@ namespace GetShorty
 
             public void InsertOrChange(string v, double w)
             {
-                int i = Convert.ToInt32(v);
+                //int i = Convert.ToInt32(v);
                 int size = nodes.Count;
                 KeyValuePair<string, double> kvp = new KeyValuePair<string, double>(v, w);
-                if (indexes[i] > -1)
+
+                //change
+                //if (indexes[i] > -1)
+                if (indexes.ContainsKey(v))
                 {
-                    nodes[indexes[i]] = kvp;
-                    indexes[i] = nodes.IndexOf(kvp);
+                    nodes[indexes[v]] = kvp;
+                    indexes[v] = nodes.IndexOf(kvp);
                     if (size > 1)
                     {
                         HeapifyUp(size - 1);
                     }
                     
                 }
+
+                // insert
                 else
                 {
                     nodes.Add(kvp);
-                    indexes[i] = nodes.IndexOf(kvp);
+                    indexes.Add(v, nodes.IndexOf(kvp));
+                    //indexes[i] = nodes.IndexOf(kvp);
                     size++;
                     if (size > 1)
                     {
@@ -181,8 +189,10 @@ namespace GetShorty
                 KeyValuePair<string, double> temp = nodes[p1];
                 nodes[p1] = nodes[p2];
                 nodes[p2] = temp;
-                indexes[Convert.ToInt32(nodes[p1].Key)] = nodes.IndexOf(nodes[p1]);
-                indexes[Convert.ToInt32(nodes[p2].Key)] = nodes.IndexOf(nodes[p2]);
+                //indexes[Convert.ToInt32(nodes[p1].Key)] = nodes.IndexOf(nodes[p1]);
+                //indexes[Convert.ToInt32(nodes[p2].Key)] = nodes.IndexOf(nodes[p2]);
+                indexes[nodes[p1].Key] = nodes.IndexOf(nodes[p1]);
+                indexes[nodes[p2].Key] = nodes.IndexOf(nodes[p2]);
             }
 
             public string DeleteMax()
@@ -191,15 +201,18 @@ namespace GetShorty
                 
                 string maxKey = max.Key;
                 nodes[0] = nodes[nodes.Count - 1];
-                indexes[Convert.ToInt32(nodes[0].Key)] = 0;
+                //indexes[Convert.ToInt32(nodes[0].Key)] = 0;
+                indexes[nodes[0].Key] = 0;
                 nodes.Remove(nodes[nodes.Count -1]);
-                indexes[Convert.ToInt32(maxKey)] = -1;
+                //indexes[Convert.ToInt32(maxKey)] = -1;
+                indexes[maxKey] = -1;
                 HeapifyDown(0);
                 return maxKey;
             }
 
             private void HeapifyDown(int n)
             {
+                
                 if (n >= nodes.Count)
                 {
                     return;
@@ -233,59 +246,6 @@ namespace GetShorty
                 }
              
             }
-
-
-            //private class PriorityQueue2
-            //{
-            //    private Dictionary<string, double> ar;
-
-
-            //    public PriorityQueue2()
-            //    {
-            //        ar = new Dictionary<string, double>();
-
-            //    }
-
-            //    public bool IsEmpty()
-            //    {
-            //        if (ar.Count == 0)
-            //        {
-            //            return true;
-            //        }
-            //        return false;
-            //    }
-
-            //    public void InsertOrChange(string v, double w)
-            //    {
-            //        try
-            //        {
-            //            ar.Add(v, w);
-            //        }
-            //        catch (ArgumentException e)
-            //        {
-            //            ar[v] = w;
-            //        }
-            //    }
-
-            //    public string DeleteMax()
-            //    {
-            //        //double max = ar.Values.First();
-            //        //string maxKey = ar.Keys.First();
-            //        //foreach (KeyValuePair<string, double> kvp in ar)
-            //        //{
-            //        //    if (kvp.Value > max)
-            //        //    {
-            //        //        max = kvp.Value;
-            //        //        maxKey = kvp.Key;
-            //        //    }
-            //        //}
-            //        //ar.Remove(maxKey);
-            //        //return maxKey;
-
-            //        double max = ar.Max(kvp => kvp.Value);
-            //        return ar.Where(kvp => kvp.Value == max).First().Key;
-            //    }
-            //}
         }
 
 
