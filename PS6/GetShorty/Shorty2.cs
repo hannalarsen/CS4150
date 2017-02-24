@@ -201,9 +201,9 @@ namespace GetShorty
 
             public string DeleteMax()
             {
-                KeyValuePair<string, double> max = nodes[0];
+                //KeyValuePair<string, double> max = nodes[0];
                 
-                string maxKey = max.Key;
+                string maxKey = nodes[0].Key;
                 nodes[0] = nodes[nodes.Count - 1];
                 indexes[Convert.ToInt32(nodes[0].Key)] = 0;
                 //indexes[nodes[0].Key] = 0;
@@ -222,7 +222,7 @@ namespace GetShorty
                     return;
                 }
 
-                while (true)
+                while (n < nodes.Count)
                 {
                     int largest = n;
                     int left = 2 * n + 1;
@@ -243,10 +243,7 @@ namespace GetShorty
                         Swap(largest, n);
                         n = largest;
                     }
-                    else
-                    {
-                        break;
-                    }
+                    n = left;
                 }
              
             }
