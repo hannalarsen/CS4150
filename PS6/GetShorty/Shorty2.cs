@@ -136,22 +136,24 @@ namespace GetShorty
                 if (indexes[i] > -1)
                 {
                     nodes[indexes[i]] = kvp;
+                    indexes[i] = nodes.IndexOf(kvp);
                     if (size > 1)
                     {
-                        HeapifyUp(size);
+                        HeapifyUp(size - 1);
                     }
-                    indexes[i] = nodes.IndexOf(kvp);
+                    
                 }
                 else
                 {
                     nodes.Add(kvp);
+                    indexes[i] = nodes.IndexOf(kvp);
                     size++;
                     if (size > 1)
                     {
                         HeapifyUp(size - 1);
                         
                     }
-                    indexes[i] = nodes.IndexOf(kvp);
+                    
                 }
             }
 
@@ -168,7 +170,9 @@ namespace GetShorty
                 {
                     nodes[(i - 1) / 2] = current;
                     nodes[i] = parent;
-                    HeapifyUp((i - 1) / 2);
+                    indexes[Convert.ToInt32(current.Key)] = (i - 1) / 2;
+                    indexes[Convert.ToInt32(parent.Key)] = i;
+                    HeapifyUp((i) / 2);
                 }
             }
 
@@ -182,13 +186,14 @@ namespace GetShorty
                 int last = nodes.Count - 1;
                 if (nodes.Count > 0)
                 {
-                    nodes[0] = nodes.ElementAt(last);
-                    indexes[Convert.ToInt32(nodes.ElementAt(last).Key)] = 0;
-                    last--;
+                    //nodes[0] = nodes.ElementAt(last);
+                    //indexes[Convert.ToInt32(nodes.ElementAt(last).Key)] = 0;
+                    
                     if (last > 0)
                     {
                         HeapifyDown(last);
                     }
+                    last--;
                 }
                 return maxKey;
             }
@@ -202,10 +207,10 @@ namespace GetShorty
                     return;
                 }
 
-                if (current.Value < nodes.ElementAt((2 * i) - 1).Value)
+                if (current.Value < nodes.ElementAt((2 * i) + 1).Value)
                 {
-                    nodes[i] = nodes.ElementAt((2 * i) - 1);
-                    nodes[(2 * i) - 1] = current;
+                    nodes[i] = nodes.ElementAt((2 * i) + 1);
+                    nodes[(2 * i) + 1] = current;
 
                     indexes[Convert.ToInt32(current.Key)] = nodes.IndexOf(current);
                     indexes[Convert.ToInt32(nodes.ElementAt(i).Key)] = nodes.IndexOf(nodes.ElementAt(i));
