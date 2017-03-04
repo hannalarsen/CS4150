@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,27 +35,27 @@ namespace NumberTheory
                     case "gcd":
                         a = Convert.ToInt64(currentLine[1]);
                         b = Convert.ToInt64(currentLine[2]);
-                        GCD(a, b);
+                        Console.WriteLine(GCD(a, b).ToString());
                         break;
                     case "exp":
                         a = Convert.ToInt64(currentLine[1]);
                         b = Convert.ToInt64(currentLine[2]);
                         N = Convert.ToInt64(currentLine[3]);
-                        Exp(a, b, N);
+                        Console.WriteLine(Exp(a, b, N).ToString());
                         break;
                     case "inverse":
                         a = Convert.ToInt64(currentLine[1]);
                         N = Convert.ToInt64(currentLine[2]);
-                        Inverse(a, N);
+                        Console.WriteLine(Inverse(a, N));
                         break;
                     case "isprime":
                         a = Convert.ToInt64(currentLine[1]);
-                        IsPrime(a);
+                        Console.WriteLine(IsPrime(a));
                         break;
                     case "key":
                         a = Convert.ToInt64(currentLine[1]);
                         b = Convert.ToInt64(currentLine[2]);
-                        RSAKey(a, b);
+                        //Console.WriteLine(RSAKey(a, b));
                         break;
                 }
             }
@@ -65,7 +66,7 @@ namespace NumberTheory
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        public void GCD(long a, long b)
+        public long GCD(long a, long b)
         {
             long result = 0;
 
@@ -75,7 +76,7 @@ namespace NumberTheory
                 a = b;
                 b = result;
             }
-            Console.WriteLine(a.ToString());
+            return a;
         }
 
         /// <summary>
@@ -84,10 +85,38 @@ namespace NumberTheory
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="N"></param>
-        public void Exp(long x, long y, long N)
+        public long Exp(long x, long y, long N)
         {
-            long result = 0;
-            Console.WriteLine(result.ToString());
+            //long result = 1;
+            //byte[] bytes = BitConverter.GetBytes(y);
+            //BitArray bits = new BitArray(bytes.GroupBy(.ToArray());
+            //foreach(bool b in bits)
+            //{
+            //    if (b == true)
+            //    {
+            //        result = x * (result ^ 2) % N;
+            //    }
+            //    else
+            //    {
+            //        result = (result ^ 2) % N;
+            //    }
+            //}
+            long result;
+            if (y == 0)
+                return 1;
+            else
+            {
+                result = Exp(x, (y / 2), N);
+                if ((y % 2) == 0)
+                {
+                    return (result*result) % N;
+                }
+                else
+                {
+                    return (x * (result*result)) % N;
+                }
+            }
+            //return result;
         }
 
         /// <summary>
@@ -96,10 +125,40 @@ namespace NumberTheory
         /// </summary>
         /// <param name="a"></param>
         /// <param name="N"></param>
-        public void Inverse(long a, long N)
+        public string Inverse(long a, long N)
         {
-            long result = 0;
-            Console.WriteLine(result.ToString());
+            long[] eeResults = new long[3];
+            eeResults = ExtendedEuclids(a, N);
+
+            if (eeResults[2] == 1)
+            {
+                return (eeResults[0] % N).ToString();
+            }
+            else
+            {
+                return "none";
+            }
+        }
+
+        private long[] ExtendedEuclids(long a, long b)
+        {
+            long[] result = new long[3];
+            long[] temp = new long[3];
+            if (b == 0)
+            {
+                result[0] = 1;
+                result[1] = 0;
+                result[2] = a;
+                return result;
+            }
+            else
+            {
+                temp = ExtendedEuclids(b, (a % b));
+                result[0] = temp[1];
+                result[1] = temp[0] - (a / b) * temp[1];
+                result[2] = temp[2];
+                return result;
+            }
         }
 
         /// <summary>
@@ -107,10 +166,10 @@ namespace NumberTheory
         /// Prints “no” otherwise.
         /// </summary>
         /// <param name="a"></param>
-        public void IsPrime(long a)
+        public string IsPrime(long a)
         {
             string result = "no";
-            Console.WriteLine(result);
+            return result;
         }
 
         /// <summary>
@@ -122,11 +181,7 @@ namespace NumberTheory
         /// <param name="q"></param>
         public void RSAKey(long p, long q)
         {
-            long[] results = new long[3];
-            foreach(long r in results)
-            {
-                Console.Write(r.ToString() + " ");
-            }
+            
         }
     }
 }
