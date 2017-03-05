@@ -55,7 +55,7 @@ namespace NumberTheory
                     case "key":
                         a = Convert.ToInt64(currentLine[1]);
                         b = Convert.ToInt64(currentLine[2]);
-                        //Console.WriteLine(RSAKey(a, b));
+                        Console.WriteLine(RSAKey(a, b));
                         break;
                 }
             }
@@ -166,9 +166,28 @@ namespace NumberTheory
         /// Prints “no” otherwise.
         /// </summary>
         /// <param name="a"></param>
-        public string IsPrime(long a)
+        public string IsPrime(long N)
         {
             string result = "no";
+            int prime = 0;
+            
+            if (Exp(2, (N-1), N) == (1 % N))
+            {
+                prime++;
+            }
+            if (Exp(3, (N - 1), N) == (1 % N))
+            {
+                prime++;
+            }
+            if (Exp(5, (N - 1), N) == (1 % N))
+            {
+                prime++;
+            }
+
+            if(prime == 3)
+            {
+                result = "yes";
+            }
             return result;
         }
 
@@ -179,9 +198,45 @@ namespace NumberTheory
         /// </summary>
         /// <param name="p"></param>
         /// <param name="q"></param>
-        public void RSAKey(long p, long q)
+        public StringBuilder RSAKey(long p, long q)
         {
-            
+            StringBuilder result = new StringBuilder();
+            long N = p * q;
+            result.Append(N.ToString() + " ");
+
+            long phi = (p - 1) * (q - 1);
+            bool foundE = false;
+            long e = 2;
+            while(foundE == false)
+            {
+                if (GCD(e, phi) == 1)
+                {
+                    foundE = true;
+                    result.Append(e.ToString() + " ");
+                    break;
+                }
+                else
+                {
+                    e++;
+                }
+            }
+
+            long d = e;
+            bool foundD = false;
+            while (foundD == false)
+            {
+                if(((e*d) % phi) == (1 % phi))
+                {
+                    foundD = true;
+                    result.Append(d.ToString());
+                    break;
+                }
+                else
+                {
+                    d++;
+                }
+            }
+            return result;
         }
     }
 }
