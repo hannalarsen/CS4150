@@ -87,36 +87,37 @@ namespace NumberTheory
         /// <param name="N"></param>
         public long Exp(long x, long y, long N)
         {
-            //long result = 1;
-            //byte[] bytes = BitConverter.GetBytes(y);
-            //BitArray bits = new BitArray(bytes.GroupBy(.ToArray());
-            //foreach(bool b in bits)
-            //{
-            //    if (b == true)
-            //    {
-            //        result = x * (result ^ 2) % N;
-            //    }
-            //    else
-            //    {
-            //        result = (result ^ 2) % N;
-            //    }
-            //}
-            long result;
-            if (y == 0)
-                return 1;
-            else
+            long result = 1;
+            string bits = Convert.ToString(y, 2);
+            
+          
+            foreach (char b in bits)
             {
-                result = Exp(x, (y / 2), N);
-                if ((y % 2) == 0)
+                if (b == '1')
                 {
-                    return (result*result) % N;
+                    result = x * (result*result) % N;
                 }
                 else
                 {
-                    return (x * (result*result)) % N;
+                    result = (result*result) % N;
                 }
             }
-            //return result;
+            //long result;
+            //if (y == 0)
+            //    return 1;
+            //else
+            //{
+            //    result = Exp(x, (y / 2), N);
+            //    if ((y % 2) == 0)
+            //    {
+            //        return (result*result) % N;
+            //    }
+            //    else
+            //    {
+            //        return (x * (result*result)) % N;
+            //    }
+            //}
+            return result;
         }
 
         /// <summary>
