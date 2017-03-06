@@ -157,17 +157,53 @@ namespace NumberTheory
         /// <param name="N"></param>
         public string Inverse(long a, long N)
         {
-            long[] eeResults = new long[3];
-            eeResults = ExtendedEuclids(a, N);
-
-            if (eeResults[2] == 1)
-            {
-                return (eeResults[0] % N).ToString();
-            }
-            else
+            if (GCD(a, N) != 1)
             {
                 return "none";
             }
+            else
+            {
+                long n = N;
+                long temp;
+                long quotient;
+                long x0 = 0;
+                long result = 1;
+
+                if (N == 1)
+                {
+                    return "0";
+                }
+
+                while (a > 1)
+                {
+                    quotient = a / N;
+                    temp = N;
+                    N = a % N;
+                    a = temp;
+                    temp = x0;
+                    x0 = result - quotient * x0;
+                    result = temp;
+                }
+
+                if (result < 0)
+                {
+                    result += n;
+                }
+                return result.ToString();
+
+            }
+
+            //long[] eeResults = new long[3];
+            //eeResults = ExtendedEuclids(a, N);
+
+            //if (eeResults[2] == 1)
+            //{
+            //    return (eeResults[0] % N).ToString();
+            //}
+            //else
+            //{
+            //    return "none";
+            //}
         }
 
         private long[] ExtendedEuclids(long a, long b)
@@ -183,7 +219,7 @@ namespace NumberTheory
             }
             else
             {
-                temp = ExtendedEuclids(b, Mod(a, b));
+                temp = ExtendedEuclids(b, a % b);
                 result[0] = temp[1];
                 result[1] = temp[0] - (a / b) * temp[1];
                 result[2] = temp[2];
