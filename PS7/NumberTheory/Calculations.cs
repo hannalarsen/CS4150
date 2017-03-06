@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace NumberTheory
 {
     class Calculations
@@ -24,8 +25,8 @@ namespace NumberTheory
             string line = "";
             string[] currentLine;
             string calculation;
-            
-            while ((line = Console.ReadLine()) != null && line !="")
+
+            while ((line = Console.ReadLine()) != null && line != "")
             {
                 currentLine = line.Split();
                 calculation = currentLine[0];
@@ -61,6 +62,13 @@ namespace NumberTheory
             }
         }
 
+        private long Mod(long a, long m)
+        {
+            long remainder = a % m;
+            if ((m > 0 && remainder < 0) || (m < 0 && remainder > 0))
+                return remainder + m;
+            return remainder;
+        }
         /// <summary>
         /// Prints the greatest common divisor of a and b
         /// </summary>
@@ -87,38 +95,42 @@ namespace NumberTheory
         /// <param name="N"></param>
         public long Exp(long x, long y, long N)
         {
-            long result = 1;
-            string bits = Convert.ToString(y, 2);
-            
-          
-            foreach (char b in bits)
-            {
-                if (b == '1')
-                {
-                    result = x * (result*result) % N;
-                }
-                else
-                {
-                    result = (result*result) % N;
-                }
-            }
-            //long result;
-            //if (y == 0)
-            //    return 1;
-            //else
+            //long result = 1;
+
+            //string bits = Convert.ToString(y, 2);
+
+
+            //foreach (char b in bits)
             //{
-            //    result = Exp(x, (y / 2), N);
-            //    if ((y % 2) == 0)
+            //    if (b == '1')
             //    {
-            //        return (result*result) % N;
+            //        //result = x * (result * result) % N;
+            //        result = Mod((x * (result * result)), N);
+
             //    }
             //    else
             //    {
-            //        return (x * (result*result)) % N;
+            //        //result = (result * result) % N;
+            //        result = Mod((result * result), N);
             //    }
             //}
-            return result;
-        }
+            long result;
+            if (y == 0)
+                return 1;
+            else
+            {
+                result = Exp(x, (y / 2), N);
+                if ((y % 2) == 0)
+                {
+                    return (result * result) % N;
+                }
+                else
+                {
+                    return (x * (result * result)) % N;
+                }
+            }
+            //return result;
+            }
 
         /// <summary>
         /// Prints a^-1 mod N, which must be non-negative and less than N.
@@ -154,7 +166,7 @@ namespace NumberTheory
             }
             else
             {
-                temp = ExtendedEuclids(b, (a % b));
+                temp = ExtendedEuclids(b, Mod(a, b));
                 result[0] = temp[1];
                 result[1] = temp[0] - (a / b) * temp[1];
                 result[2] = temp[2];
