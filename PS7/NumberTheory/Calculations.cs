@@ -95,11 +95,25 @@ namespace NumberTheory
         /// <param name="N"></param>
         public long Exp(long x, long y, long N)
         {
+            //ITERATIVE (v2)
+
+            long result = 1;
+            x = x % N;
+            while (y > 0)
+            {
+                if (y % 2 != 0)
+                {
+                    result = (result * x) % N;
+                }
+                y = y >> 1;
+                x = (x * x) % N;
+            }
+            return result;
+
+            // ITERATIVE (v1)
+
             //long result = 1;
-
             //string bits = Convert.ToString(y, 2);
-
-
             //foreach (char b in bits)
             //{
             //    if (b == '1')
@@ -114,21 +128,24 @@ namespace NumberTheory
             //        result = Mod((result * result), N);
             //    }
             //}
-            long result;
-            if (y == 0)
-                return 1;
-            else
-            {
-                result = Exp(x, (y / 2), N);
-                if ((y % 2) == 0)
-                {
-                    return (result * result) % N;
-                }
-                else
-                {
-                    return (x * (result * result)) % N;
-                }
-            }
+
+            // RECURSIVE
+        
+            //long result;
+            //if (y == 0)
+            //    return 1;
+            //else
+            //{
+            //    result = Exp(x, (y / 2), N);
+            //    if ((y % 2) == 0)
+            //    {
+            //        return (result * result) % N;
+            //    }
+            //    else
+            //    {
+            //        return (x * (result * result)) % N;
+            //    }
+            //}
             //return result;
             }
 
