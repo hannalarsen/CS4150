@@ -271,13 +271,11 @@ namespace NumberTheory
             result.Append(N.ToString() + " ");
 
             long phi = (p - 1) * (q - 1);
-            bool foundE = false;
             long e = 2;
-            while(foundE == false)
+            while(e < phi)
             {
                 if (GCD(e, phi) == 1)
                 {
-                    foundE = true;
                     result.Append(e.ToString() + " ");
                     break;
                 }
@@ -286,22 +284,8 @@ namespace NumberTheory
                     e++;
                 }
             }
+            result.Append(Inverse(e, phi));
 
-            long d = e;
-            bool foundD = false;
-            while (foundD == false)
-            {
-                if(((e*d) % phi) == (1 % phi))
-                {
-                    foundD = true;
-                    result.Append(d.ToString());
-                    break;
-                }
-                else
-                {
-                    d++;
-                }
-            }
             return result;
         }
     }
