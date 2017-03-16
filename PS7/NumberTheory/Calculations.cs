@@ -10,12 +10,36 @@ namespace NumberTheory
 {
     class Calculations
     {
+        int count;
         static void Main(string[] args)
         {
             Calculations c = new Calculations();
-            c.GetInfo();
+            //c.GetInfo();
+            c.test(2, 32, 5);
+            Console.WriteLine(c.count.ToString());
         }
 
+        public int test(int x, int y, int N)
+        {
+            int result;
+            count = 0;
+            if (y == 0)
+                return 1;
+            else
+            {
+                result = test(x, (y / 2), N);
+                if ((y % 2) == 0)
+                {
+                    count++;
+                    return (result * result) % N;
+                }
+                else
+                {
+                    count = count + 2;
+                    return (x * (result * result)) % N;
+                }
+            }
+        }
         public void GetInfo()
         {
             long a = 0;
