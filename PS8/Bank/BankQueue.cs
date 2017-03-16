@@ -9,8 +9,12 @@ namespace Bank
     class BankQueue
     {
         private List<int>[] data;
+        private int T;
         static void Main(string[] args)
         {
+            BankQueue b = new BankQueue();
+            b.GetInfo();
+            Console.WriteLine(b.FindMax().ToString());
         }
 
         public void GetInfo()
@@ -19,7 +23,7 @@ namespace Bank
             string[] currentLine;
             int count = 0;
             int N = 0;
-            int T = 0;
+            T = 0;
             int c = 0;
             int t = 0;
 
@@ -50,6 +54,46 @@ namespace Bank
                     break;
                 }
             }
+        }
+
+        public int FindMax()
+        {
+            int sum = 0;
+            int timeElapsed = 0;
+            int currentIndex = 0;
+            int j = 0;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] != null)
+                {
+                    data[i].Sort(new Comparison<int>((i1, i2) => i2.CompareTo(i1)));
+                }
+            }
+
+            while (currentIndex < data.Length)
+            {
+                if (data[currentIndex] == null)
+                {
+                    currentIndex++;
+                    continue;
+                }
+
+                while (timeElapsed <= currentIndex)
+                {
+                    sum += data[currentIndex][j];
+                    j++;
+                    timeElapsed++;
+                }
+
+                if (timeElapsed > T)
+                {
+                    break;
+                }
+                j = 0;
+                currentIndex++;
+            }
+            return sum;
         }
     }
 }
