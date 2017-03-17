@@ -58,12 +58,12 @@ namespace Bank2
                 //queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
             queue.Sort(delegate (Person p1, Person p2)
             {
-                int compareTime = p1.GetTime().CompareTo(p2.GetTime());
-                if (compareTime == 0)
+                int comparePrice = p1.GetTime().CompareTo(p2.GetTime());
+                if (comparePrice == 0)
                 {
                     return p2.GetPrice().CompareTo(p1.GetPrice());
                 }
-                return compareTime;
+                return comparePrice;
             });
 
                 foreach (Person p in queue)
