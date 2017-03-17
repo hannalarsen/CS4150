@@ -97,16 +97,12 @@ namespace Bank
                     currentIndex++;
                     continue;
                 }
-                
-                
-                
+
                 sum += data[currentIndex][0];
                 data[currentIndex].RemoveAt(0);
                 timeElapsed++;
                 currentIndex++;
-                
-
-                
+                 
             }
 
             return sum;
