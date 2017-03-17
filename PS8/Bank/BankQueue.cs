@@ -74,33 +74,39 @@ namespace Bank
 
                 if(data[i] != null && data[i].Count > longest)
                 {
-                    longest = data[i].Count;
+                    longest = data[i].Count - 1;
                     longestIndex = i;
                 }
             }
 
-            while (timeElapsed <= T && j < longest && currentIndex < data.Length)
+            while (timeElapsed <= T)
             {
-                if (data[currentIndex] == null)
-                {
-                    currentIndex++;
-                    continue;
-                }
-                
-                if (longestIndex < currentIndex)
-                {
-                    break;
-                }
-                
-                sum += data[currentIndex][j];
-                timeElapsed++;
-                currentIndex++;
-
                 if (currentIndex == data.Length)
                 {
                     currentIndex = timeElapsed;
                     j++;
                 }
+
+                if (j > longest)
+                {
+                    break;
+                }
+
+                if (data[currentIndex] == null || data[currentIndex].Count == 0)
+                {
+                    currentIndex++;
+                    continue;
+                }
+                
+                
+                
+                sum += data[currentIndex][0];
+                data[currentIndex].RemoveAt(0);
+                timeElapsed++;
+                currentIndex++;
+                
+
+                
             }
 
             return sum;
