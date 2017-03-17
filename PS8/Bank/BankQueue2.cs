@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Bank
 {
-    class BankQueue2
+    public class BankQueue2
     {
         private List<Person> queue;
         private int T;
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             BankQueue2 b = new BankQueue2();
             b.GetInfo2();
@@ -52,14 +52,18 @@ namespace Bank
         {
             int sum = 0;
             int timeElapsed = 0;
+
             queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i2.GetPrice()));
 
-            foreach(Person p in queue)
+            foreach (Person p in queue)
             {
-                if(p.GetTime() <= timeElapsed)
+                if (timeElapsed < T)
                 {
-                    sum += p.GetPrice();
-                    timeElapsed++;
+                    if (p.GetTime() <= timeElapsed)
+                    {
+                        sum += p.GetPrice();
+                        timeElapsed++;
+                    }
                 }
             }
             return sum;
