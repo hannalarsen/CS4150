@@ -62,6 +62,8 @@ namespace Bank
             int timeElapsed = 0;
             int currentIndex = 0;
             int j = 0;
+            int longest = data[0].Count;
+            int longestIndex = 0;
 
             for (int i = 0; i < data.Length; i++)
             {
@@ -69,30 +71,38 @@ namespace Bank
                 {
                     data[i].Sort(new Comparison<int>((i1, i2) => i2.CompareTo(i1)));
                 }
+
+                if(data[i] != null && data[i].Count > longest)
+                {
+                    longest = data[i].Count;
+                    longestIndex = i;
+                }
             }
 
-            while (currentIndex < data.Length)
+            while (timeElapsed <= T && j < longest && currentIndex < data.Length)
             {
                 if (data[currentIndex] == null)
                 {
                     currentIndex++;
                     continue;
                 }
-
-                while (timeElapsed <= currentIndex)
-                {
-                    sum += data[currentIndex][j];
-                    j++;
-                    timeElapsed++;
-                }
-
-                if (timeElapsed > T)
+                
+                if (longestIndex < currentIndex)
                 {
                     break;
                 }
-                j = 0;
+                
+                sum += data[currentIndex][j];
+                timeElapsed++;
                 currentIndex++;
+
+                if (currentIndex == data.Length)
+                {
+                    currentIndex = timeElapsed;
+                    j++;
+                }
             }
+
             return sum;
         }
     }
