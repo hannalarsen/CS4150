@@ -55,28 +55,47 @@ namespace Bank2
                 int sum = 0;
                 int timeElapsed = 0;
 
-                //queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
-            queue.Sort(delegate (Person p1, Person p2)
+            queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
+            List<Person> optimal = new List<Person>();
+            for(int i = 0; i < T; i++)
             {
-                int comparePrice = p1.GetTime().CompareTo(p2.GetTime());
-                if (comparePrice == 0)
+                if (i >= queue.Count)
                 {
-                    return p2.GetPrice().CompareTo(p1.GetPrice());
+                    break;
                 }
-                return comparePrice;
-            });
+                optimal.Add(queue[i]);
+            }
 
-                foreach (Person p in queue)
+            optimal.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
+            foreach (Person p in optimal)
+            {
+                if (p.GetTime() >= timeElapsed)
                 {
-                    if (timeElapsed < T)
-                    {
-                        if (p.GetTime() >= timeElapsed)
-                        {
-                            sum += p.GetPrice();
-                            timeElapsed++;
-                        }
-                    }
+                    sum += p.GetPrice();
+                    timeElapsed++;
                 }
+            }
+            //queue.Sort(delegate (Person p1, Person p2)
+            //{
+            //    int comparePrice = p1.GetTime().CompareTo(p2.GetTime());
+            //    if (comparePrice == 0)
+            //    {
+            //        return p2.GetPrice().CompareTo(p1.GetPrice());
+            //    }
+            //    return comparePrice;
+            //});
+
+                //foreach (Person p in queue)
+                //{
+                //    if (timeElapsed < T)
+                //    {
+                //        if (p.GetTime() >= timeElapsed)
+                //        {
+                //            sum += p.GetPrice();
+                //            timeElapsed++;
+                //        }
+                //    }
+                //}
                 return sum;
             }
         }
