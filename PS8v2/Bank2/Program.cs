@@ -9,6 +9,7 @@ namespace Bank2
     class Program
     {
         private List<Person> queue;
+        private int N;
         private int T;
 
         static void Main(string[] args)
@@ -24,7 +25,7 @@ namespace Bank2
                 string line = "";
                 string[] currentLine;
                 int count = 0;
-                int N = 0;
+                N = 0;
                 T = 0;
                 int c = 0;
                 int t = 0;
@@ -54,25 +55,40 @@ namespace Bank2
             {
                 int sum = 0;
                 int timeElapsed = 0;
-
-            queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
-            List<Person> optimal = new List<Person>();
-            for(int i = 0; i < T; i++)
+            if (N > T)
             {
-                if (i >= queue.Count)
+                queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
+                List<Person> optimal = new List<Person>();
+                for (int i = 0; i < T; i++)
                 {
-                    break;
+                    if (i >= queue.Count)
+                    {
+                        break;
+                    }
+                    optimal.Add(queue[i]);
                 }
-                optimal.Add(queue[i]);
+
+                optimal.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
+                foreach (Person p in optimal)
+                {
+                    if (p.GetTime() >= timeElapsed)
+                    {
+                        sum += p.GetPrice();
+                        timeElapsed++;
+                    }
+                }
             }
 
-            optimal.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
-            foreach (Person p in optimal)
+            else
             {
-                if (p.GetTime() >= timeElapsed)
+                queue.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
+                foreach (Person p in queue)
                 {
-                    sum += p.GetPrice();
-                    timeElapsed++;
+                    if (p.GetTime() >= timeElapsed)
+                    {
+                        sum += p.GetPrice();
+                        timeElapsed++;
+                    }
                 }
             }
             //queue.Sort(delegate (Person p1, Person p2)
