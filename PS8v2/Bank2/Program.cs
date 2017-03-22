@@ -54,65 +54,93 @@ namespace Bank2
             public int FindMax2()
             {
                 int sum = 0;
-                int timeElapsed = 0;
-            if (N > T)
+                int timeElapsed = T;
+            //if (N > T)
+            //{
+            //    queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
+            //    List<Person> optimal = new List<Person>();
+            //    for (int i = 0; i < T; i++)
+            //    {
+            //        if (i >= queue.Count)
+            //        {
+            //            break;
+            //        }
+            //        optimal.Add(queue[i]);
+            //    }
+
+            //    optimal.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
+            //    foreach (Person p in optimal)
+            //    {
+            //        if (p.GetTime() >= timeElapsed)
+            //        {
+            //            sum += p.GetPrice();
+            //            timeElapsed++;
+            //        }
+            //    }
+            //}
+
+            //else
             {
-                queue.Sort((i1, i2) => i2.GetPrice().CompareTo(i1.GetPrice()));
-                List<Person> optimal = new List<Person>();
-                for (int i = 0; i < T; i++)
+                //queue.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
+                queue.Sort(delegate (Person p1, Person p2)
+                {
+                    int comparePrice = p2.GetTime().CompareTo(p1.GetTime());
+                    if (comparePrice == 0)
+                    {
+                        return p1.GetPrice().CompareTo(p2.GetPrice());
+                    }
+                    return comparePrice;
+                });
+                //foreach (Person p in queue)
+                //{
+                //    if (p.GetTime() >= timeElapsed)
+                //    {
+                //        sum += p.GetPrice();
+                //        timeElapsed++;
+                //    }
+                //}
+
+                Stack<Person> order = new Stack<Person>();
+                int timeLeft = T;
+                for (int i = 0; i <= T; i++)
                 {
                     if (i >= queue.Count)
                     {
                         break;
                     }
-                    optimal.Add(queue[i]);
+                    order.Push(queue[i]);
                 }
 
-                optimal.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
-                foreach (Person p in optimal)
+                
+                timeElapsed = 0;
+                while (timeElapsed <= T && order.Count > 0)
                 {
-                    if (p.GetTime() >= timeElapsed)
+                    if (timeElapsed <= order.Peek().GetTime())
                     {
-                        sum += p.GetPrice();
-                        timeElapsed++;
+                        sum += order.Pop().GetPrice();
+                        timeLeft--;
+                        timeElapsed++; 
+                    }
+                    else
+                    {
+                        order.Pop();
                     }
                 }
             }
+            
 
-            else
-            {
-                queue.Sort((p1, p2) => (p1.GetTime().CompareTo(p2.GetTime())));
-                foreach (Person p in queue)
-                {
-                    if (p.GetTime() >= timeElapsed)
-                    {
-                        sum += p.GetPrice();
-                        timeElapsed++;
-                    }
-                }
-            }
-            //queue.Sort(delegate (Person p1, Person p2)
+            //foreach (Person p in queue)
             //{
-            //    int comparePrice = p1.GetTime().CompareTo(p2.GetTime());
-            //    if (comparePrice == 0)
+            //    if (timeElapsed < T)
             //    {
-            //        return p2.GetPrice().CompareTo(p1.GetPrice());
+            //        if (p.GetTime() >= timeElapsed)
+            //        {
+            //            sum += p.GetPrice();
+            //            timeElapsed++;
+            //        }
             //    }
-            //    return comparePrice;
-            //});
-
-                //foreach (Person p in queue)
-                //{
-                //    if (timeElapsed < T)
-                //    {
-                //        if (p.GetTime() >= timeElapsed)
-                //        {
-                //            sum += p.GetPrice();
-                //            timeElapsed++;
-                //        }
-                //    }
-                //}
-                return sum;
+            //}
+            return sum;
             }
         }
 
