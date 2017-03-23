@@ -71,7 +71,7 @@ namespace Bank2
             int minIndex = 0;
             for (int i = 0; i < optimal.Count; i++)
             {
-               if (optimal[minIndex].GetTime() > optimal[i].GetTime())
+               if (optimal[minIndex].GetPrice() > optimal[i].GetPrice())
                 {
                     minIndex = i;
                 }
