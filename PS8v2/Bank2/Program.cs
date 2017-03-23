@@ -50,11 +50,11 @@ namespace Bank2
                     queue.Add(p);
                 }
             }
-
+        int maxIndex = 0;
         public int FindMax(int n)
         {
             int max = 0;
-            int maxIndex = 0;
+            maxIndex = 0;
             for (int i = 0; i < queue.Count; i++)
             {
                 if (queue[i].GetTime() < n)
@@ -68,7 +68,7 @@ namespace Bank2
                 }
                 //max = Math.Max(max, queue[i].GetPrice());
             }
-            queue.RemoveAt(maxIndex);
+            //queue.RemoveAt(maxIndex);
             return max;
         }
         public int MaxTotal()
@@ -78,7 +78,16 @@ namespace Bank2
             int current = queue[0].GetTime();
             while (current >= 0)
             {
+                if (current >= optimal.Length)
+                {
+                    current--;
+                    continue;
+                }
                 optimal[current] = FindMax(current);
+                if (optimal[current] > 0)
+                {
+                    queue.RemoveAt(maxIndex);
+                }
                 current--;
             }
             int sum = 0;
