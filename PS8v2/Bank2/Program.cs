@@ -16,7 +16,7 @@ namespace Bank2
         {
             Program p = new Program();
             p.GetInfo2();
-            Console.WriteLine(p.FindMax2());
+            Console.WriteLine(p.MaxTotal());
         }
             
 
@@ -51,41 +51,74 @@ namespace Bank2
                 }
             }
 
-        public int FindMax2()
+        public int FindMax(int n)
         {
-            int sum = 0;
-            int timeElapsed = 0;
-
-            queue.Sort((p1, p2) => (p2.GetPrice().CompareTo(p1.GetPrice())));
-            List<Person> optimal = new List<Person>();
+            int max = 0;
+            int maxIndex = 0;
             for (int i = 0; i < queue.Count; i++)
             {
-                if (i > T)
+                if (queue[i].GetTime() < n)
                 {
                     break;
                 }
-                optimal.Add(queue[i]);
+                else if (max < queue[i].GetPrice())
+                {
+                    max = queue[i].GetPrice();
+                    maxIndex = i;
+                }
+                //max = Math.Max(max, queue[i].GetPrice());
             }
-
-            optimal.Sort((o1, o2) => o1.GetTime().CompareTo(o2.GetTime()));
-            int minIndex = 0;
-            for (int i = 0; i < optimal.Count; i++)
+            queue.RemoveAt(maxIndex);
+            return max;
+        }
+        public int MaxTotal()
+        {
+            queue.Sort((p1, p2) => p2.GetTime().CompareTo(p1.GetTime()));
+            int[] optimal = new int[T];
+            int current = T;
+            for (int i = T-1; i >= 0; i--)
             {
-               if (optimal[minIndex].GetPrice() > optimal[i].GetPrice())
-                {
-                    minIndex = i;
-                }
-                if (timeElapsed >= T && optimal[i].GetTime() > optimal[minIndex].GetTime())
-                {
-                    sum -= optimal[minIndex].GetPrice();
-                    sum += optimal[i].GetPrice();
-                }
-                else if (optimal[i].GetTime() >= timeElapsed)
-                {
-                    sum += optimal[i].GetPrice();
-                    timeElapsed++;
-                }
+                optimal[i] = FindMax(current);
+                current--;
             }
+            int sum = 0;
+
+            foreach (int i in optimal)
+            {
+                sum += i;
+            }
+            //int timeElapsed = 0;
+
+            
+            //List<Person> optimal = new List<Person>();
+            //for (int i = 0; i < queue.Count; i++)
+            //{
+            //    if (i > T)
+            //    {
+            //        break;
+            //    }
+            //    optimal.Add(queue[i]);
+            //}
+
+            //optimal.Sort((o1, o2) => o1.GetTime().CompareTo(o2.GetTime()));
+            //int minIndex = 0;
+            //for (int i = 0; i < optimal.Count; i++)
+            //{
+            //    if (optimal[minIndex].GetPrice() > optimal[i].GetPrice())
+            //    {
+            //        minIndex = i;
+            //    }
+            //    if (timeElapsed >= T && optimal[i].GetTime() > optimal[minIndex].GetTime())
+            //    {
+            //        sum -= optimal[minIndex].GetPrice();
+            //        sum += optimal[i].GetPrice();
+            //    }
+            //    else if (optimal[i].GetTime() >= timeElapsed)
+            //    {
+            //        sum += optimal[i].GetPrice();
+            //        timeElapsed++;
+            //    }
+            //}
             //queue.Sort(delegate (Person p1, Person p2)
             //{
             //    int comparePrice = p2.GetTime().CompareTo(p1.GetTime());
@@ -95,11 +128,10 @@ namespace Bank2
             //    }
             //    return comparePrice;
             //});
-        
+
             return sum;
             }
-        }
-
+    }
         class Person
         {
             int price;
