@@ -75,10 +75,10 @@ namespace Bank2
         {
             queue.Sort((p1, p2) => p2.GetTime().CompareTo(p1.GetTime()));
             int[] optimal = new int[T];
-            int current = T;
-            for (int i = T-1; i >= 0; i--)
+            int current = queue[0].GetTime();
+            while (current >= 0)
             {
-                optimal[i] = FindMax(current);
+                optimal[current] = FindMax(current);
                 current--;
             }
             int sum = 0;
