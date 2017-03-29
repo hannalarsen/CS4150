@@ -10,6 +10,8 @@ namespace Rainbow
     {
         private int[] distance;
         private int N;
+        private int minPenalty;
+        private int currentPenalty;
         public static void Main(string[] args)
         {
             Rainbow r = new Rainbow();
@@ -42,12 +44,8 @@ namespace Rainbow
         public int MinPenalty()
         {
             Dictionary<int, int> cache = new Dictionary<int, int>();
-            int minPenalty = Int32.MaxValue;
-            for (int i = 0; i < N; i++)
-            {
-                minPenalty = Math.Min(minPenalty, Penalty(i, cache));
-            }
-            return minPenalty;
+            //minPenalty = Int32.MaxValue;
+            return Penalty(0, cache);
         }
 
         private int Penalty(int i, Dictionary<int, int> cache)
@@ -57,28 +55,30 @@ namespace Rainbow
             {
                 return result;
             }
-
             if (i + 1 == N)
             {
                 cache[i] = 0;
                 return 0;
             }
-
-            int minPenalty = Int32.MaxValue;
-            int currentMin = Int32.MaxValue;
-            int c = 0;
-            for (int j = i+1; j < distance.Length; j++)
+            minPenalty = Int32.MaxValue;
+           for (int j = i + 1; j < N; j++)
             {
                 int d = distance[j] - distance[i];
-                c = (400 - d) * (400 - d);
-                if (c < minPenalty)
+                int p = (400 - d) * (400 - d);
+                currentPenalty = p + Penalty(j, cache);
+                if (j == i + 1)
                 {
-                    //currentMin = c;
-                    minPenalty = Math.Min(minPenalty, Penalty(j, cache));
+                    minPenalty = currentPenalty;
                 }
+                else
+                {
+                    minPenalty = Math.Min(minPenalty, currentPenalty);
+                }
+                
             }
-            cache[i] = minPenalty + c;
-            return minPenalty + c;
+            
+            cache[i] = minPenalty;
+            return minPenalty;
         }
     }
 }
