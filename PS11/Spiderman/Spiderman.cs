@@ -11,6 +11,7 @@ namespace SpidermansWorkout
         List<List<int>> workouts;
         int heightAbove;
         StringBuilder sequence;
+        int maxHeight;
         static void Main(string[] args)
         {
             Spiderman s = new Spiderman();
@@ -51,8 +52,15 @@ namespace SpidermansWorkout
 
         public StringBuilder OptimalSequence(List<int> seq) 
         {
+            heightAbove = 0;
+            maxHeight = seq.Max();
             sequence = new StringBuilder();
-            if (Height(seq,0, sequence) == 0)
+            if (seq.Count % 2 != 0)
+            {
+                sequence.Append("IMPOSSIBLE");
+                return sequence;
+            }
+            if (Height(seq, sequence) == 0)
             {
                 return sequence;
             }
@@ -64,35 +72,37 @@ namespace SpidermansWorkout
             }
         }
 
-        private int Height(List<int> l, int i, StringBuilder s)
+        private int Height(List<int> l, StringBuilder s)
         {
-            heightAbove = 0;
-            for (int j = i; j < l.Count; j++)
+            int uCount = 0;
+            for (int i = 0; i < l.Count; i++)
             {
                 if (heightAbove == 0)
                 {
-                    heightAbove += l[j];
+                    heightAbove += l[i];
                     s.Append("U");
+                    uCount++;
                 }
-                else if (j == l.Count - 1)
+                else if (i == l.Count - 1)
                 {
-                    heightAbove -= l[j];
+                    heightAbove -= l[i];
                     s.Append("D");
+                }
+                else if (heightAbove + l[i] > maxHeight)
+                {
+                    heightAbove -= l[i];
+                    s.Append("D");
+                }
+                else if (uCount < l.Count/2)
+                {
+                    heightAbove += l[i];
+                    s.Append("U");
+                    uCount++;
                 }
                 else
                 {
-                    int p1 = heightAbove + l[j];
-                    int p2 = heightAbove - l[j];
-                    if (p2 < 0)
-                    {
-                        heightAbove = p1;
-                        s.Append("U");
-                    }
-                    else
-                    {
-                        heightAbove = p2;
-                        s.Append("D");
-                    }
+                    heightAbove -= l[i];
+                    s.Append("D");
                 }
             }
             return heightAbove;
