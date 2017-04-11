@@ -9,9 +9,7 @@ namespace SpidermansWorkout
     class Spiderman
     {
         List<List<int>> workouts;
-        int heightAbove;
         StringBuilder sequence;
-        int maxHeight;
         static void Main(string[] args)
         {
             Spiderman s = new Spiderman();
@@ -52,15 +50,14 @@ namespace SpidermansWorkout
 
         public StringBuilder OptimalSequence(List<int> seq) 
         {
-            heightAbove = 0;
-            maxHeight = seq.Max();
             sequence = new StringBuilder();
+            Dictionary<int, int> cache = new Dictionary<int, int>();
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
                 return sequence;
             }
-            if (Height(seq, sequence) == 0)
+            if (Height(seq, 0, sequence, cache) == 0)
             {
                 return sequence;
             }
@@ -72,40 +69,21 @@ namespace SpidermansWorkout
             }
         }
 
-        private int Height(List<int> l, StringBuilder s)
+        private int Height(List<int> l, int i, StringBuilder s, Dictionary<int, int> cache)
         {
-            int uCount = 0;
-            for (int i = 0; i < l.Count; i++)
+            int result;
+            if (cache.TryGetValue(i, out result))
             {
-                if (heightAbove == 0)
-                {
-                    heightAbove += l[i];
-                    s.Append("U");
-                    uCount++;
-                }
-                else if (i == l.Count - 1)
-                {
-                    heightAbove -= l[i];
-                    s.Append("D");
-                }
-                else if (heightAbove + l[i] > maxHeight)
-                {
-                    heightAbove -= l[i];
-                    s.Append("D");
-                }
-                else if (uCount < l.Count/2)
-                {
-                    heightAbove += l[i];
-                    s.Append("U");
-                    uCount++;
-                }
-                else
-                {
-                    heightAbove -= l[i];
-                    s.Append("D");
-                }
+                return result;
             }
-            return heightAbove;
+
+            int minHeight = Int32.MaxValue;
+            for (int j = i; j < l.Count; j++)
+            {
+                if 
+            }
+            cache[i] = minHeight;
+            return minHeight;
         }
     }
 }
