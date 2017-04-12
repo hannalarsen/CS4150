@@ -10,6 +10,8 @@ namespace SpidermansWorkout
     {
         List<List<int>> workouts;
         StringBuilder sequence;
+        int heightAbove;
+        int minHeight;
         static void Main(string[] args)
         {
             Spiderman s = new Spiderman();
@@ -51,13 +53,15 @@ namespace SpidermansWorkout
         public StringBuilder OptimalSequence(List<int> seq) 
         {
             sequence = new StringBuilder();
+            heightAbove = 0;
+            minHeight = 0;
             Dictionary<int, int> cache = new Dictionary<int, int>();
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
                 return sequence;
             }
-            if (Height(seq, 0, sequence, cache) == 0)
+            if (Height(seq, 0, 0, sequence, cache) == 0)
             {
                 return sequence;
             }
@@ -69,21 +73,31 @@ namespace SpidermansWorkout
             }
         }
 
-        private int Height(List<int> l, int i, StringBuilder s, Dictionary<int, int> cache)
+        private int Height(List<int> l, int i , int h, StringBuilder s, Dictionary<int, int> cache)
         {
             int result;
-            if (cache.TryGetValue(i, out result))
+            if(cache.TryGetValue(i, out result))
             {
                 return result;
             }
-
-            int minHeight = Int32.MaxValue;
-            for (int j = i; j < l.Count; j++)
+            if (i == l.Count - 1)
             {
-                if 
+                h -= l[i];
+                cache[i] = h;
+                return h;
             }
-            cache[i] = minHeight;
-            return minHeight;
+                if (h == 0 || h - l[i] < 0)
+                {
+                    h += l[i];
+                    cache[i] = h;
+                    return Height(l, i + 1, h, s, cache);
+                }
+                else
+                {
+                int p1 = Height(l, i + 1, h + l[i], s, cache);
+                int p2 = Height(l, i + 1, h - l[i], s, cache);
+                return Math.Min(p1, p2);
+                }
         }
     }
 }
