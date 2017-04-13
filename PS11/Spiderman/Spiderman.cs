@@ -67,6 +67,18 @@ namespace SpidermansWorkout
             else
             {
                 Height(seq, 0, 0, cache);
+                cache[0] = 0;
+                for (int i = 0; i < cache.Count-1; i++)
+                {
+                    if (cache[i + 1] > cache[i])
+                    {
+                        sequence.Append("U");
+                    }
+                    else
+                    {
+                        sequence.Append("D");
+                    }
+                }
                 return sequence;
             }
 
@@ -83,6 +95,7 @@ namespace SpidermansWorkout
             {
                 if (h == 0)
                 {
+                    cache[i] = 0;
                     return 0;
                 }
                 else
@@ -93,18 +106,19 @@ namespace SpidermansWorkout
 
             if (h - l[i] < 0)
             {
-                cache[i] = Height(l, i + 1, h + l[i], cache);
+                h= Height(l, i + 1, h + l[i], cache) + l[i];
             }
             else if (h + l[i] > maxHeight/2)
             {
-                cache[i] = Height(l, i + 1, h - l[i], cache);
+                h = Height(l, i + 1, h - l[i], cache) - l[i];               
             }
             else
             {
-                cache[i] = Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));              
+                Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));           
             }
-            minHeight = Math.Max(minHeight, cache[i]);
-            return cache[i];
+            cache[i] = h;
+            minHeight = Math.Max(minHeight, h);
+            return minHeight;
         }
     }
 }
