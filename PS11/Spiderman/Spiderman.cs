@@ -11,7 +11,7 @@ namespace SpidermansWorkout
         List<List<int>> workouts;
         StringBuilder sequence;
         int minHeight;
-        int heightAbove;
+        int maxHeight;
         static void Main(string[] args)
         {
             Spiderman s = new Spiderman();
@@ -53,9 +53,12 @@ namespace SpidermansWorkout
         public StringBuilder OptimalSequence(List<int> seq) 
         {
             sequence = new StringBuilder();
-            minHeight = int.MaxValue;
-            heightAbove = 0;
+            minHeight = 0;
             Dictionary<int, int> cache = new Dictionary<int, int>();
+            foreach (int n in seq)
+            {
+                maxHeight += n;
+            }
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
@@ -87,10 +90,21 @@ namespace SpidermansWorkout
                     return int.MaxValue;
                 }
             }
-                else
-                {
-                    return Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));
-                }
+
+            if (h - l[i] < 0)
+            {
+                cache[i] = Height(l, i + 1, h + l[i], cache);
+            }
+            else if (h + l[i] > maxHeight/2)
+            {
+                cache[i] = Height(l, i + 1, h - l[i], cache);
+            }
+            else
+            {
+                cache[i] = Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));              
+            }
+            minHeight = Math.Max(minHeight, cache[i]);
+            return cache[i];
         }
     }
 }
