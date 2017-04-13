@@ -10,8 +10,8 @@ namespace SpidermansWorkout
     {
         List<List<int>> workouts;
         StringBuilder sequence;
-        int heightAbove;
         int minHeight;
+        int heightAbove;
         static void Main(string[] args)
         {
             Spiderman s = new Spiderman();
@@ -53,50 +53,43 @@ namespace SpidermansWorkout
         public StringBuilder OptimalSequence(List<int> seq) 
         {
             sequence = new StringBuilder();
+            minHeight = int.MaxValue;
             heightAbove = 0;
-            minHeight = 0;
             Dictionary<int, int> cache = new Dictionary<int, int>();
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
                 return sequence;
             }
-            if (Height(seq, 0, 0, sequence, cache) == 0)
-            {
-                return sequence;
-            }
             else
             {
-                sequence.Clear();
-                sequence.Append("IMPOSSIBLE");
+                Height(seq, 0, 0, cache);
                 return sequence;
             }
+
         }
 
-        private int Height(List<int> l, int i , int h, StringBuilder s, Dictionary<int, int> cache)
+        private int Height(List<int> l, int i , int h, Dictionary<int, int> cache)
         {
             int result;
             if(cache.TryGetValue(i, out result))
             {
                 return result;
             }
-            if (i == l.Count - 1)
+            if (i == l.Count)
             {
-                h -= l[i];
-                cache[i] = h;
-                return h;
-            }
-                if (h == 0 || h - l[i] < 0)
+                if (h == 0)
                 {
-                    h += l[i];
-                    cache[i] = h;
-                    return Height(l, i + 1, h, s, cache);
+                    return 0;
                 }
                 else
                 {
-                int p1 = Height(l, i + 1, h + l[i], s, cache);
-                int p2 = Height(l, i + 1, h - l[i], s, cache);
-                return Math.Min(p1, p2);
+                    return int.MaxValue;
+                }
+            }
+                else
+                {
+                    return Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));
                 }
         }
     }
