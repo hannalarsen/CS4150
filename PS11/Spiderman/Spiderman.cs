@@ -83,7 +83,7 @@ namespace SpidermansWorkout
 
         }
 
-        private int Height(List<int> l, int i , int h, Dictionary<int, int> cache)
+        private int Height(List<int> l, int i, int h, Dictionary<int, int> cache)
         {
             if (i == l.Count)
             {
@@ -97,24 +97,33 @@ namespace SpidermansWorkout
                     return int.MaxValue;
                 }
             }
-        
+
             int p = Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));
-            if (h < 0)
+            int result;
+            if (h < 0 || p == int.MaxValue)
+            {
+                return int.MaxValue;
+            }
+            else if ((cache.TryGetValue(l.Count, out result) == false))
             {
                 return int.MaxValue;
             }
             else
             {
-                int result;
                 if (cache.TryGetValue(i, out result))
                 {
-                    if (result < h)
+                    if (h > result)
                     {
-                        return h;
+                        return int.MaxValue;
+                    }
+                    if (h < p)
+                    {
+                        return int.MaxValue;
                     }
                 }
-                cache[i] = h;
+                    cache[i] = h;
             }
+           
             return h;
         }
     }
