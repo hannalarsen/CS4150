@@ -53,12 +53,12 @@ namespace SpidermansWorkout
         public StringBuilder OptimalSequence(List<int> seq) 
         {
             sequence = new StringBuilder();
-            minHeight = 0;
             Dictionary<int, int> cache = new Dictionary<int, int>();
             foreach (int n in seq)
             {
                 maxHeight += n;
             }
+            minHeight = maxHeight / 2;
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
@@ -116,9 +116,20 @@ namespace SpidermansWorkout
                     {
                         return int.MaxValue;
                     }
-                    
+                    if (h > 0)
+                    {
+                        minHeight = Math.Min(minHeight, h);
+                    }
+                    if (minHeight > h)
+                    {
+                        cache[i] = h;
+                    }
                 }
+                else
+                {
                     cache[i] = h;
+                }
+                
             }     
             return h;
         }
