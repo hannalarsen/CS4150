@@ -116,14 +116,10 @@ namespace SpidermansWorkout
                     {
                         return int.MaxValue;
                     }
-                    if (h < p)
-                    {
-                        return int.MaxValue;
-                    }
+                    
                 }
                     cache[i] = h;
-            }
-           
+            }     
             return h;
         }
     }
