@@ -50,7 +50,7 @@ namespace SpidermansWorkout
             }
         }
 
-        public StringBuilder OptimalSequence(List<int> seq) 
+        public StringBuilder OptimalSequence(List<int> seq)
         {
             sequence = new StringBuilder();
             Dictionary<int, int> cache = new Dictionary<int, int>();
@@ -58,7 +58,8 @@ namespace SpidermansWorkout
             {
                 maxHeight += n;
             }
-            minHeight = maxHeight / 2;
+            //minHeight = maxHeight / 2;
+            minHeight = 0;
             if (seq.Count % 2 != 0)
             {
                 sequence.Append("IMPOSSIBLE");
@@ -67,7 +68,7 @@ namespace SpidermansWorkout
             else
             {
                 Height(seq, 0, 0, cache);
-                for (int i = 0; i < cache.Count-1; i++)
+                for (int i = 0; i < cache.Count - 1; i++)
                 {
                     if (cache[i + 1] > cache[i])
                     {
@@ -85,6 +86,11 @@ namespace SpidermansWorkout
 
         private int Height(List<int> l, int i, int h, Dictionary<int, int> cache)
         {
+            int result;
+            if (cache.TryGetValue(i, out result))
+            {
+                return result;
+            }
             if (i == l.Count)
             {
                 if (h == 0)
@@ -97,9 +103,12 @@ namespace SpidermansWorkout
                     return int.MaxValue;
                 }
             }
-
-            int p = Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));
-            int result;
+            int p;
+            if (i == 0)
+            {
+                p = Height(l, i + 1, h + l[i], cache);
+            }
+            p = Math.Min(Height(l, i + 1, h + l[i], cache), Height(l, i + 1, h - l[i], cache));
             if (h < 0 || p == int.MaxValue)
             {
                 return int.MaxValue;
@@ -108,30 +117,46 @@ namespace SpidermansWorkout
             {
                 return int.MaxValue;
             }
+            else if (p == 0)
+            {
+                cache[i] = h;
+                minHeight = Math.Max(minHeight, h);
+                return cache[i];
+            }
+            //else
+            //{
+            //    if (cache.TryGetValue(i, out result))
+            //    {
+            //        if (h > result)
+            //        {
+            //            return int.MaxValue;
+            //        }
+            //        if (h > 0)
+            //        {
+            //            minHeight = Math.Min(minHeight, h);
+            //        }
+            //        if (minHeight > h)
+            //        {
+            //            cache[i] = h;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        cache[i] = h;
+            //    }
+
             else
             {
-                if (cache.TryGetValue(i, out result))
+                if (h > minHeight && p - h > 0)
                 {
-                    if (h > result)
-                    {
-                        return int.MaxValue;
-                    }
-                    if (h > 0)
-                    {
-                        minHeight = Math.Min(minHeight, h);
-                    }
-                    if (minHeight > h)
-                    {
-                        cache[i] = h;
-                    }
+                    cache[i] = Math.Min(h, p - h);
                 }
                 else
                 {
                     cache[i] = h;
                 }
-                
-            }     
-            return h;
+            }
+            return cache[i];
         }
     }
 }
