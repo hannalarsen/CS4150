@@ -10,6 +10,10 @@ namespace TSP
     {
         int n;
         int[,] matrix;
+        bool[] visited;
+        int optimal;
+        int lowerBound;
+        int[] currentPath;
         static void Main(string[] args)
         {
             Salesman s = new Salesman();
@@ -42,57 +46,97 @@ namespace TSP
 
         public int MinCost()
         {
-            int cost = 0;
-            HashSet<int> visited = new HashSet<int>();
             if (n == 2)
             {
                 return matrix[0, 1] + matrix[1, 0];
             }
-            int i = 0;       
-            int count = 0;
-            visited.Add(i);
-            while (count < n)
+            currentPath = new int[n + 1];
+            lowerBound = 0;
+            for (int i = 0; i < n; i++)
             {
-                int minIndex = 0;
-                int min = 1000;
-                for (int j = 0; j < n; j++)
+                lowerBound += FindMinEdge1(i) + FindMinEdge2(i);
+            }
+            lowerBound = Convert.ToInt32(lowerBound * 0.5);
+            optimal = int.MaxValue;
+            visited = new bool[n];
+            visited[0] = true;
+            Optimize(lowerBound, 0, 1, currentPath);
+            return optimal;
+        }
+
+        private void Optimize(int currentBound, int currentWeight, int l, int[] path)
+        {
+            if (l == n)
+            {
+                int currentBest = currentWeight + matrix[path[n - 1], path[0]];
+                if (currentBest < optimal)
                 {
-                    if (count == n - 1)
+                    optimal = currentBest;
+                }
+                return;
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                if (path[l-1] != i && visited[i] == false)
+                {
+                    int t = currentBound;
+                    currentWeight += matrix[path[l - 1], i];
+                    if (l == 1)
                     {
-                        cost += matrix[i, 0];
-                        count++;
-                        break;
+                        currentBound -= ((FindMinEdge1(path[l - 1]) + FindMinEdge1(i)) / 2);
                     }
-                    if (j == i)
+                    else
                     {
-                        if (j == n-1)
-                        {
-                            cost += min;
-                            i = minIndex;
-                            visited.Add(minIndex);
-                            count++;
-                        }
-                        continue;
+                        currentBound -= ((FindMinEdge2(path[l - 1]) + FindMinEdge1(i)) / 2);
                     }
-                    if (matrix[i, j] < min)
+                    if (currentBound + currentWeight < optimal)
                     {
-                        if (visited.Contains(j))
-                        {
-                            continue;
-                        }
-                        min = matrix[i, j];
-                        minIndex = j;
+                        path[l] = i;
+                        visited[i] = true;
+                        Optimize(currentBound, currentWeight, l + 1, path);
                     }
-                    if (j == n - 1)
-                    {
-                        cost += min;
-                        i = minIndex;
-                        visited.Add(minIndex);
-                        count++;
-                    }
+                    currentWeight -= matrix[path[l - 1], i];
+                    currentBound = t;
+                    visited[l] = false;
                 }
             }
-            return cost;
+        }
+
+        private int FindMinEdge1(int i)
+        {
+            int min = int.MaxValue;
+            for (int j = 0; j < n; j++)
+            {
+                if (matrix[i,j] < min && i != j)
+                {
+                    min = matrix[i, j];
+                }
+            }
+            return min;
+        }
+
+        private int FindMinEdge2(int i)
+        {
+            int f = int.MaxValue;
+            int s = int.MaxValue;
+            for (int j = 0; j < n; j++)
+            {
+                if (i == j)
+                {
+                    continue;
+                }
+                if (matrix[i,j] <= f)
+                {
+                    s = f;
+                    f = matrix[i, j];
+                }
+                else if (matrix[i,j] <= s && matrix[i,j] != f)
+                {
+                    s = matrix[i, j];
+                }
+            }
+            return s;
         }
     }
 }
