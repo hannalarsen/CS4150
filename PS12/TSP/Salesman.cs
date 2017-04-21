@@ -82,7 +82,7 @@ namespace TSP
                     }
                     if (matrix[i,j] < currentMin && visited[j] == false)
                     {
-                        currentMin = matrix[nextIndex, j];
+                        currentMin = matrix[i, j];
                         nextIndex = j;
                     }
                 }
