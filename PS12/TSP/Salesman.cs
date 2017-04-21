@@ -13,6 +13,7 @@ namespace TSP
         bool[] visited;
         int optimal;
         int lowerBound;
+        int count;
         int[] currentPath;
         static void Main(string[] args)
         {
@@ -46,6 +47,7 @@ namespace TSP
 
         public int MinCost2()
         {
+            optimal = int.MaxValue;
             if (n == 2)
             {
                 return matrix[0, 1] + matrix[1, 0];
@@ -53,46 +55,50 @@ namespace TSP
             int[] costs = new int[n];
             for (int i = 0; i < n; i++)
             {
-                costs[i] = CalculateCost(i);
+                visited = new bool[n];
+                lowerBound = 0;
+                count = 0;
+                costs[i] = CalculateCost2(i);
             }
             return costs.Min();
         }
 
-        private int CalculateCost(int i)
-        {
-            int cost = 0;
-            int start = i;
-            int currentMin = int.MaxValue;
-            int nextIndex = i;
-            int count = 0;
-            visited = new bool[n];
-            while (count < n)
-            {
-                visited[i] = true;
-                if (count == n - 1)
-                {
-                    cost += matrix[i, start];
-                    break;
-                }
-                for (int j = 0; j < n; j++)
-                {
-                    if (j == i)
-                    {
-                        continue;
-                    }
-                    if (matrix[i,j] < currentMin && visited[j] == false)
-                    {
-                        currentMin = matrix[i, j];
-                        nextIndex = j;
-                    }
-                }
-                cost += currentMin;
-                count++;
-                currentMin = int.MaxValue;
-                i = nextIndex;
-            }
-            return cost;
-        }
+
+        //private int CalculateCost(int i)
+        //{
+        //    int cost = 0;
+        //    int start = i;
+        //    int currentMin = int.MaxValue;
+        //    int nextIndex = i;
+        //    int count = 0;
+        //    visited = new bool[n];
+        //    while (count < n)
+        //    {
+        //        visited[i] = true;
+        //        if (count == n - 1)
+        //        {
+        //            cost += matrix[i, start];
+        //            break;
+        //        }
+        //        for (int j = 0; j < n; j++)
+        //        {
+        //            if (j == i)
+        //            {
+        //                continue;
+        //            }
+        //            if (matrix[i,j] < currentMin && visited[j] == false)
+        //            {
+        //                currentMin = matrix[i, j];
+        //                nextIndex = j;
+        //            }
+        //        }
+        //        cost += currentMin;
+        //        count++;
+        //        currentMin = int.MaxValue;
+        //        i = nextIndex;
+        //    }
+        //    return cost;
+        //}
 
         //public int MinCost()
         //{
