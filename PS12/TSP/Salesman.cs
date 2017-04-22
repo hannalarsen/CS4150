@@ -10,11 +10,11 @@ namespace TSP
     {
         int n;
         int[,] matrix;
-        bool[] visited;
-        int optimal;
-        int lowerBound;
-        int count;
-        int[] currentPath;
+        //bool[] visited;
+        //int optimal;
+        //int lowerBound;
+        //int count;
+        //int[] currentPath;
         static void Main(string[] args)
         {
             Salesman s = new Salesman();
@@ -47,20 +47,19 @@ namespace TSP
 
         public int MinCost2()
         {
-            optimal = int.MaxValue;
             if (n == 2)
             {
                 return matrix[0, 1] + matrix[1, 0];
             }
 
-            int[] arr = new int[n];
+            int[] optPath = new int[n];
             for (int i = 0; i < n; i++)
             {
-                arr[i] = i;
+                optPath[i] = i;
             }
-            int minCost = int.MaxValue;
-            minCost = CalcMinCost(arr, 0, 0, minCost);
-            return minCost;
+            int optimalLength = int.MaxValue;
+            optimalLength = CalcMinCost(optPath, 0, 0, optimalLength);
+            return optimalLength;
             //int[] costs = new int[n];
             //for (int i = 0; i < n; i++)
             //{
@@ -72,12 +71,12 @@ namespace TSP
             //return costs.Min();
         }
 
-        private int CalcMinCost(int[] A, int i, int lengthSoFar, int minCost)
+        private int CalcMinCost(int[] A, int i, int lengthSoFar, int minLength)
         {
             if (i == n - 1)
             {
-                minCost = Math.Min(minCost, lengthSoFar + matrix[A[n - 1], A[0]]);
-                return minCost;
+                minLength = Math.Min(minLength, lengthSoFar + matrix[A[n - 1], A[0]]);
+                return minLength;
             }
             else
             {
@@ -85,17 +84,17 @@ namespace TSP
                 {
                     A = Swap(A, A[i + 1], A[j]);
                     int length = lengthSoFar + matrix[A[i], A[i + 1]];
-                    if (length >= minCost)
+                    if (length >= minLength)
                     {
                         continue;
                     }
                     else
                     {
-                        minCost = Math.Min(minCost, CalcMinCost(A, i + 1, length, minCost));
+                        minLength = Math.Min(minLength, CalcMinCost(A, i + 1, length, minLength));
                     }
                     A = Swap(A, A[i + 1], A[j]);
                 }
-                return minCost;
+                return minLength;
             }
         }
 
