@@ -52,18 +52,60 @@ namespace TSP
             {
                 return matrix[0, 1] + matrix[1, 0];
             }
-            int[] costs = new int[n];
+
+            int[] arr = new int[n];
             for (int i = 0; i < n; i++)
             {
-                visited = new bool[n];
-                lowerBound = 0;
-                count = 0;
-                costs[i] = CalculateCost2(i);
+                arr[i] = i;
             }
-            return costs.Min();
+            int minCost = int.MaxValue;
+            minCost = CalcMinCost(arr, 0, 0, minCost);
+            return minCost;
+            //int[] costs = new int[n];
+            //for (int i = 0; i < n; i++)
+            //{
+            //    visited = new bool[n];
+            //    lowerBound = 0;
+            //    count = 0;
+            //    costs[i] = CalculateCost2(i);
+            //}
+            //return costs.Min();
         }
 
+        private int CalcMinCost(int[] A, int i, int lengthSoFar, int minCost)
+        {
+            if (i == n - 1)
+            {
+                minCost = Math.Min(minCost, lengthSoFar + matrix[A[n - 1], A[0]]);
+                return minCost;
+            }
+            else
+            {
+                for (int j = i + 1; j < n; j++)
+                {
+                    A = Swap(A, A[i + 1], A[j]);
+                    int length = lengthSoFar + matrix[A[i], A[i + 1]];
+                    if (length >= minCost)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        minCost = Math.Min(minCost, CalcMinCost(A, i + 1, length, minCost));
+                    }
+                    A = Swap(A, A[i + 1], A[j]);
+                }
+                return minCost;
+            }
+        }
 
+        private int[] Swap(int[] A, int a1, int a2)
+        {
+            int temp = A[a1];
+            A[a1] = A[a2];
+            A[a2] = temp;
+            return A;
+        }
         //private int CalculateCost(int i)
         //{
         //    int cost = 0;
