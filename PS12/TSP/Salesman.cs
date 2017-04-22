@@ -19,7 +19,7 @@ namespace TSP
         {
             Salesman s = new Salesman();
             s.GetInfo();
-            Console.WriteLine(s.MinCost2());
+            Console.WriteLine(s.MinWeight());
         }
 
         public void GetInfo()
@@ -45,7 +45,7 @@ namespace TSP
             }
         }
 
-        public int MinCost2()
+        public int MinWeight()
         {
             if (n == 2)
             {
@@ -58,7 +58,7 @@ namespace TSP
                 optPath[i] = i;
             }
             int optimalLength = int.MaxValue;
-            optimalLength = CalcMinCost(optPath, 0, 0, optimalLength);
+            optimalLength = CalcMinWeight(optPath, 0, 0, optimalLength);
             return optimalLength;
             //int[] costs = new int[n];
             //for (int i = 0; i < n; i++)
@@ -71,7 +71,7 @@ namespace TSP
             //return costs.Min();
         }
 
-        private int CalcMinCost(int[] A, int i, int lengthSoFar, int minLength)
+        private int CalcMinWeight(int[] A, int i, int lengthSoFar, int minLength)
         {
             if (i == n - 1)
             {
@@ -90,7 +90,7 @@ namespace TSP
                     }
                     else
                     {
-                        minLength = Math.Min(minLength, CalcMinCost(A, i + 1, length, minLength));
+                        minLength = Math.Min(minLength, CalcMinWeight(A, i + 1, length, minLength));
                     }
                     A = Swap(A, A[i + 1], A[j]);
                 }
