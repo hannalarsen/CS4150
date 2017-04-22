@@ -53,13 +53,20 @@ namespace TSP
             }
 
             int[] optPath = new int[n];
+            int[] costs = new int[n];
             for (int i = 0; i < n; i++)
             {
-                optPath[i] = i;
+                for (int j = 0; j < n; j++)
+                {
+                    optPath[j] = j;
+                }
+                if (i > 0)
+                {
+                    optPath = Swap(optPath, optPath[0], optPath[i]);
+                }
+                int optimalLength = int.MaxValue;
+                costs[i] = optimalLength = CalcMinWeight(optPath, 0, 0, optimalLength);
             }
-            int optimalLength = int.MaxValue;
-            optimalLength = CalcMinWeight(optPath, 0, 0, optimalLength);
-            return optimalLength;
             //int[] costs = new int[n];
             //for (int i = 0; i < n; i++)
             //{
@@ -68,7 +75,7 @@ namespace TSP
             //    count = 0;
             //    costs[i] = CalculateCost2(i);
             //}
-            //return costs.Min();
+            return costs.Min();
         }
 
         private int CalcMinWeight(int[] A, int i, int lengthSoFar, int minLength)
