@@ -54,15 +54,17 @@ namespace TSP
 
             int[] optPath = new int[n];
             int[] costs = new int[n];
+            
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
                     optPath[j] = j;
                 }
+
                 if (i > 0)
                 {
-                    optPath = Swap(optPath, 0, i);
+                    Swap(optPath, 0, i);
                 }
                 int optimalLength = int.MaxValue;
                 costs[i] = optimalLength = CalcMinWeight(optPath, 0, 0, optimalLength);
@@ -83,7 +85,7 @@ namespace TSP
                 {
                     if (i + 1 != j)
                     {
-                        A = Swap(A, i + 1, j);
+                        Swap(A, i + 1, j);
                     }
                     int length = lengthSoFar + matrix[A[i], A[i + 1]];
                     if (length >= minLength)
@@ -96,19 +98,19 @@ namespace TSP
                     }
                     if (i + 1 != j)
                     {
-                        A = Swap(A, i + 1, j);
+                        Swap(A, i + 1, j);
                     }
                 }
                 return minLength;
             }
         }
 
-        private int[] Swap(int[] A, int a1, int a2)
+        private void Swap(int[] A, int a1, int a2)
         {
             int temp = A[a1];
             A[a1] = A[a2];
             A[a2] = temp;
-            return A;
+            //return A;
         }
     }
 }
